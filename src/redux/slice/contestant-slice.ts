@@ -17,7 +17,7 @@ export interface Contestant{
 
 
 interface ContestantState{
-  list: Array<Contestant>
+  list: Contestant[]
 }
 const initialState: ContestantState = {
   list: [],
@@ -35,16 +35,22 @@ const ContestantSlice = createSlice(
           exist ||= (cont.name == contestant.name)
         })
 
-        if(!exist)
+        if(!exist){
           state.list.push(contestant);
+          window.api.saveAllContestant([contestant]);
+        }
       },
      removeContestant(state, contestant: PayloadAction<Contestant>){
       state.list = state.list.filter((contstn)=> contstn.name!=contestant.payload.name)
+      window.api.deleteContestant(contestant.payload)
+     },
+     addList(state,list : PayloadAction<Contestant[]>){
+      state.list =  list.payload
      }
 
     }
   }
 );
 
-export const {addContestant, removeContestant } = ContestantSlice.actions;
+export const {addContestant, removeContestant, addList } = ContestantSlice.actions;
 export default ContestantSlice.reducer; 

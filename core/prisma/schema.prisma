@@ -33,3 +33,16 @@ model Student {
   name    String
   semester String
 }
+
+model Contestant{
+  id        Int 
+  name      String @id @unique
+  isValid   Boolean
+  CfInfoRatting Int?
+  CfInfoTitlePhoto String?
+  CfInfoHandle  String?
+  CfInfoAvatar  String?
+  CfInfoFirstName String?
+  CfInfoRank  String?
+}
+

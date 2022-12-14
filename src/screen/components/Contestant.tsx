@@ -13,13 +13,13 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { TiDeleteOutline } from "react-icons/ti";
 import {
   Contestant as TypedContestant,
   addContestant,
   removeContestant,
   CfInfo,
+  addList,
 } from "../../redux/slice/contestant-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import apiGet, { DataCfInfo } from "../cfApi/apiGet";
@@ -32,6 +32,13 @@ const Contestant = () => {
   const [newHandle, setNewHandle] = useState("");
   const [adding, setAdding] = useState(false);
 
+  useEffect(() => {
+    const findAll = async () => {
+      const list = await window.api.findAllContestant()
+      dispatch(addList(list));
+    };
+    findAll();
+  }, []);
   useEffect(() => {
     const addToList = async (contestant: TypedContestant) => {
       fetch(
@@ -86,7 +93,6 @@ const Contestant = () => {
   return (
     <>
       <Grid
-        
         h="200px"
         templateRows="repeat(10, 5rem)"
         templateColumns="repeat(1, 1fr)"
@@ -101,7 +107,7 @@ const Contestant = () => {
             justifyContent="space-between"
             margin="0 0.5rem 2rem 1rem"
           >
-            <Text fontWeight="bold" fontSize="1.8rem">
+            <Text fontWeight="bold" fontSize="1.8rem" color="darkblue">
               Current Contestants
             </Text>
           </Flex>
@@ -112,7 +118,7 @@ const Contestant = () => {
               fontSize="1.4rem"
               value={newHandle}
               onChange={(e) => setNewHandle(e.target.value.replace(/\s/g, ""))}
-              mr="0.5rem"
+              mr="1rem"
               my="0.5rem"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
@@ -124,6 +130,7 @@ const Contestant = () => {
               colorScheme="teal"
               isLoading={adding}
               onClick={() => setAdding(true)}
+              size= "lg"
             >
               Add
             </Button>
@@ -141,7 +148,7 @@ const Contestant = () => {
                           position="sticky"
                           fontSize="1.3rem"
                           color={
-                            contestant.isValid
+                            contestant.isValid && (contestant.info.rating)
                               ? colorFromRank(contestant.info.rating)
                               : "black"
                           }

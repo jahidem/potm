@@ -70,7 +70,7 @@ const TopBar = () => {
         </Flex>
 
         <Flex className="app-draggable" width="100%"></Flex>
-        <Flex width="9rem" alignItems="center" justifyContent="space-around">
+        <Flex width="16rem" alignItems="center" justifyContent="space-around">
           <Flex
             _hover={{ bg: "#DCDCDC" }}
             width="100%"

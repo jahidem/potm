@@ -28,7 +28,7 @@ export default class HomeWindow {
       },
     });
     if (HomeWindow.thisWindow != null) {
-      // HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/homeWindow");
+      // HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
       HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
       HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
     }
