@@ -1,0 +1,85 @@
+{
+  "name": "potm",
+  "productName": "potm",
+  "version": "0.1.0",
+  "homepage": ".",
+  "private": true,
+  "main": "build/main.js",
+  "dependencies": {
+    "@chakra-ui/react": "^2.4.2",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@prisma/client": "^4.7.1",
+    "@reduxjs/toolkit": "^1.9.1",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.4",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "@types/react-redux": "^7.1.24",
+    "axios": "^1.2.1",
+    "crypto-browserify": "^3.12.0",
+    "electron-pdf-window": "^1.0.12",
+    "framer-motion": "^7.6.17",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.7.1",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.4.5",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.0",
+    "typescript": "^4.9.3",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start:web": "react-scripts start",
+    "build:web": "react-scripts build",
+    "build:desktop": "tsc -p core/tsconfig.json",
+    "start:desktop": "npm run build:desktop && electron build/main.js",
+    "migrate": "cd core && npx prisma migrate dev --name init",
+    "studio": "cd core && npx prisma studio",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@redux-devtools/core": "^3.13.1",
+    "@types/electron": "^1.6.10",
+    "electron": "^22.0.0",
+    "prisma": "^4.7.1"
+  },
+  "build": {
+    "appId": "studyante",
+    "win": {
+      "target": "NSIS",
+      "icon": "./core/extraResources/icona.jpg"
+    },
+    "extraResources": [
+      "core/prisma/**/*",
+      "node_modules/.prisma/**/*",
+      "node_modules/@prisma/client/**/*"
+    ],
+    "extraMetadata": {
+      "main": "build/main.js"
+    }
+  }
+}
