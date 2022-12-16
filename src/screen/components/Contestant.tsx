@@ -11,6 +11,7 @@ import {
   Button,
   Grid,
   GridItem,
+  
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { TiDeleteOutline } from "react-icons/ti";
@@ -22,7 +23,11 @@ import {
   addList,
 } from "../../redux/slice/contestant-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { fetchContestant, Loading, updateContestantLoading } from "../../redux/slice/afapi-slice";
+import {
+  fetchContestant,
+  Loading,
+  updateContestantLoading,
+} from "../../redux/slice/afapi-slice";
 
 const Contestant = () => {
   const contestantList = useAppSelector((state) => state.contstant.list);
@@ -45,16 +50,19 @@ const Contestant = () => {
   }, []);
 
   const getContestant = () => {
-    dispatch(
-      fetchContestant([
-        {
-          id: contestantList.length,
-          name: newHandle,
-          isValid: false,
-          info: null,
-        },
-      ])
-    );
+    const handle = newHandle;
+    if (handle != "")
+      dispatch(
+        fetchContestant([
+          {
+            id: contestantList.length,
+            name: handle,
+            isValid: false,
+            info: null,
+          },
+        ])
+      );
+    setNewHandle("");
   };
   const colorFromRank = (rank: number): string => {
     if (rank < 1200) return "grey";
@@ -85,9 +93,13 @@ const Contestant = () => {
             <Text fontWeight="bold" fontSize="1.8rem" color="darkblue">
               Current Contestants
             </Text>
-           
           </Flex>
-          <Flex my="1rem" justifyContent="space-between" alignItems="center">
+          <Flex
+            my="1rem 0"
+            mx="0.5rem"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Input
               placeholder="cf handle"
               size="lg"
@@ -110,18 +122,18 @@ const Contestant = () => {
             >
               Add
             </Button>
-            
           </Flex>
           <Text
-          color="red"
-              hidden ={handleLoading != Loading.FAILED}
-              onClick={() => dispatch(updateContestantLoading(Loading.IDLE))}
-            >
-              not a valid cf handle
-            </Text>
+            m="0.2rem 0 0 1rem"
+            color="red"
+            hidden={handleLoading != Loading.FAILED}
+            onClick={() => dispatch(updateContestantLoading(Loading.IDLE))}
+          >
+            not a valid cf handle
+          </Text>
         </GridItem>
         <GridItem rowSpan={8} overflowY="scroll" pr="0.6rem">
-          <TableContainer>
+          <TableContainer mx="0.5rem">
             <Table variant="striped" colorScheme="gray" fontSize="1.4rem">
               <Tbody>
                 {contestantList.map((contestant) => (

@@ -4,20 +4,22 @@ import Contestant from "../components/Contestant";
 import TopBar from "../components/TopBar";
 import Setting from "../components/Setting";
 import ContestTable from "../components/ContestTable";
+import Filter from "../components/Filter";
 const Home = () => {
   const dispatch = useAppDispatch();
   return (
     <>
       <TopBar />
-
       <Grid
-        m="4rem"
-        templateRows="repeat(10, 5rem)"
+      maxW="1300px"
+        m="4rem auto"
+        px="2rem"
+        templateRows="repeat(10, 5.6rem)"
         templateColumns="repeat(6, 1fr)"
         gap={4}
       >
         <GridItem
-          maxW="320px"
+          maxW="360px"
           rowSpan={10}
           colSpan={2}
           bg="rgb(247, 249, 249,1)"
@@ -30,7 +32,9 @@ const Home = () => {
           rowSpan={4}
           bg="rgb(247, 249, 249,1)"
           borderRadius="11px"
-        ></GridItem>
+        >
+          <Filter/>
+        </GridItem>
         <GridItem
           colSpan={2}
           rowSpan={4}

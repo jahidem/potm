@@ -32,7 +32,7 @@ const ContestantSlice = createSlice(
         const contestant = {...newContestant.payload, id:state.list.length+1 }
         let exist = false;
         state.list.forEach(cont=>{
-          exist ||= (cont.name == contestant.name)
+          exist ||= (cont.name == contestant.name || cont.name=="")
         })
 
         if(!exist){
