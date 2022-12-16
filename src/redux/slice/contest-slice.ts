@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { StandingRow } from "./afapi-slice";
 
 enum contestType {
   CF,
@@ -20,18 +21,26 @@ export interface Contest {
   startTimeSeconds: number;
   websiteUrl: string;
 }
-
+interface ReportRow {
+  handle: string;
+  problemSolved: number;
+  points: number;
+}
 interface ContestState {
   list: Contest[];
   epochStart: number;
   epochEnd: number;
-  allowDiv: (String | Number)[];
+  allowDiv: (string | number)[];
+  allowOC: (string | number)[];
+  reportRow: ReportRow[];
 }
 const initialState: ContestState = {
   list: [],
   epochStart: 0,
   epochEnd: 0,
   allowDiv: [],
+  allowOC: [],
+  reportRow: [],
 };
 
 const ContestSlice = createSlice({
@@ -54,12 +63,11 @@ const ContestSlice = createSlice({
               state.allowDiv.includes("Div. 3")) ||
             (contest.name.includes("Div. 4") &&
               state.allowDiv.includes("Div. 4")) ||
-              (state.allowDiv.includes("others") &&
-                !contest.name.includes("Div. 3")&&
-                !contest.name.includes("Div. 2")&&
-                !contest.name.includes("Div. 4")&&
-                !contest.name.includes("Div. 1")
-              ))
+            (state.allowDiv.includes("others") &&
+              !contest.name.includes("Div. 3") &&
+              !contest.name.includes("Div. 2") &&
+              !contest.name.includes("Div. 4") &&
+              !contest.name.includes("Div. 1")))
         );
       });
 
@@ -79,6 +87,13 @@ const ContestSlice = createSlice({
     updateAllowDiv(state, arr: PayloadAction<(string | number)[]>) {
       state.allowDiv = arr.payload;
     },
+    updateAllowOC(state, arr: PayloadAction<(string | number)[]>) {
+      state.allowOC = arr.payload;
+    },
+    updateReportRow(state, arr: PayloadAction<StandingRow[]>) {
+      const list: ReportRow[] = []
+      state.reportRow = list;
+    },
   },
 });
 
@@ -88,5 +103,7 @@ export const {
   setEpochStart,
   setEpochEnd,
   updateAllowDiv,
+  updateAllowOC,
+  updateReportRow,
 } = ContestSlice.actions;
 export default ContestSlice.reducer;

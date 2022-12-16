@@ -9,7 +9,7 @@ const Home = () => {
   const dispatch = useAppDispatch();
   return (
     <>
-      <TopBar />
+      <TopBar context="HOME"/>
       <Grid
       maxW="1300px"
         m="4rem auto"

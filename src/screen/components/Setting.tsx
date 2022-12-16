@@ -38,7 +38,7 @@ const Setting = () => {
   const dispatch = useAppDispatch();
 
   const [start, setStart] = useState<ChooserState>(initials);
-  const [end, setEnd] = useState<ChooserState>(initials);
+  const [end, setEnd] = useState<ChooserState>({...initials,month: 12});
   const [checkedDiv, setCheckedDiv] = useState<(string | number)[]>([
     "Div. 2",
     "Div. 3",

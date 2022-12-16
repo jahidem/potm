@@ -11,6 +11,7 @@ import {
   Flex,
   Text,
   Link,
+  Button
 } from "@chakra-ui/react";
 import { TiDeleteOutline } from "react-icons/ti";
 import {useState} from "react"
@@ -25,6 +26,7 @@ const ContestTable = () => {
   const dispatch = useAppDispatch();
 
   return (
+    contestList.length?
     <TableContainer
       fontSize="1.4rem"
       height="100%"
@@ -56,7 +58,10 @@ const ContestTable = () => {
             bgColor ={contest.id == nowOnContest? "white": "none"}
             >
               <Td>
-                <Link href={contest.websiteUrl}> {contest.id} </Link>
+                <Link onClick={()=>{
+                  window.open("https://codeforces.com/contest/"+contest.id);
+
+                }}> {contest.id} </Link>
               </Td>
               <Td>{contest.name.substring(0, 80)+ (contest.name.length> 80? "...":"")}</Td>
               <Td >
@@ -87,6 +92,9 @@ const ContestTable = () => {
         </Tbody>
       </Table>
     </TableContainer>
+    : <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
+        <Text fontSize="2.4rem" color="gray">No Contest Found</Text>
+    </Flex>
   );
 };
 

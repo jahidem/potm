@@ -5,8 +5,11 @@ import {
 } from "react-icons/vsc";
 
 import { Flex, Text } from "@chakra-ui/react";
-
-const TopBar = () => {
+import React from "react";
+export interface BarSetting{
+  host: string
+}
+const TopBar = ( {context}  ) => {
   return (
     <>
       <style>
@@ -18,7 +21,7 @@ const TopBar = () => {
         `}
       </style>
       <Flex height="3rem" backgroundColor="rgb(229,229,229)" width="100%">
-         <Flex width="25rem" justifyContent="space-around" key={0}>
+        <Flex width="25rem" justifyContent="space-around" key={0}>
           <Flex
             className="app-draggable"
             alignItems="center"
@@ -30,43 +33,39 @@ const TopBar = () => {
             </Text>
           </Flex>
 
-
+          <Flex
+            alignItems="center"
+            justifyContent="space-around"
+            _hover={{ bg: "#DCDCDC" }}
+            px="0.8rem"
+            my="0.3rem"
+            ml="1rem"
+            borderRadius="7px"
+          >
+            <Text fontSize={13}>File</Text>
+          </Flex>
 
           <Flex
-              alignItems="center"
-              justifyContent="space-around"
-              _hover={{ bg: "#DCDCDC" }}
-              px="0.8rem"
-              my="0.3rem"
-              ml="1rem"
-              borderRadius="7px"
-            >
-              <Text fontSize={13}>File</Text>
-            </Flex>
+            alignItems="center"
+            justifyContent="space-around"
+            _hover={{ bg: "#DCDCDC" }}
+            px="0.8rem"
+            my="0.3rem"
+            borderRadius="7px"
+          >
+            <Text fontSize={13}>Open</Text>
+          </Flex>
 
-            <Flex
-              alignItems="center"
-              justifyContent="space-around"
-              _hover={{ bg: "#DCDCDC" }}
-              px="0.8rem"
-              my="0.3rem"
-              borderRadius="7px"
-            >
-              <Text fontSize={13}>Open</Text>
-            </Flex>
-
-            <Flex
-              alignItems="center"
-              justifyContent="space-around"
-              _hover={{ bg: "#DCDCDC" }}
-              px="0.8rem"
-              my="0.3rem"
-              borderRadius="7px"
-            >
-              <Text fontSize={13}>About</Text>
-            </Flex>
-
-
+          <Flex
+            alignItems="center"
+            justifyContent="space-around"
+            _hover={{ bg: "#DCDCDC" }}
+            px="0.8rem"
+            my="0.3rem"
+            borderRadius="7px"
+          >
+            <Text fontSize={13}>About</Text>
+          </Flex>
         </Flex>
 
         <Flex className="app-draggable" width="100%"></Flex>
@@ -97,7 +96,11 @@ const TopBar = () => {
             height="100%"
             alignItems="center"
             justifyContent="space-around"
-            onClick={() => window.api.closeWindow()}
+            onClick={() => {
+              context == "HOME"
+                ? window.api.closeWindow()
+                : window.api.closePotm();
+            }}
           >
             <VscChromeClose size={16} color="black" />
           </Flex>

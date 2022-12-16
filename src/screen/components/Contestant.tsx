@@ -11,6 +11,7 @@ import {
   Button,
   Grid,
   GridItem,
+  Link
   
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
@@ -150,7 +151,7 @@ const Contestant = () => {
                           fontWeight="600"
                           textShadow="0.4px 0.1px black"
                         >
-                          {contestant.name}
+                          <Link onClick={()=>{window.open("https://codeforces.com/profile/"+contestant.info.handle);}}>{contestant.name}</Link>
                         </Text>
                         <Flex
                           zIndex="100"

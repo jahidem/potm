@@ -1,8 +1,29 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios';
 import  {addContestant } from "./contestant-slice";
-import {Contest} from "./contest-slice"
+import {Contest, updateReportRow} from "./contest-slice"
 import {loadContest} from "./contest-slice"
+
+interface Member{
+  handle: string
+}
+enum ParticipantType{
+  OUT_OF_COMPETITION= "OUT_OF_COMPETITION",
+  CONTESTANT = "CONTESTANT",
+  PRACTICE = "PRACTICE"
+
+}
+interface Party{
+  members: Member
+  participantType: ParticipantType,
+ 
+}
+
+export interface StandingRow{
+  party: Party,
+  points: number
+  penalty: number
+}
 export interface CfInfo{
   rating: number ,
   titlePhoto: string,
@@ -53,6 +74,24 @@ export const fetchAllContest = createAsyncThunk(
         }
     );
     thunkAPI.dispatch(loadContest(response.data.result))
+    
+    return  response.data
+  }
+)
+
+
+export const  fetchStandingRow = createAsyncThunk(
+  'cfSlice/fetchStandingRow',
+  async (url:string, thunkAPI) => {
+    const response = await axios.get(
+       url,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+    );
+    thunkAPI.dispatch( updateReportRow(response.data.result.rows))
     
     return  response.data
   }

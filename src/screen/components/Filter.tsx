@@ -7,8 +7,16 @@ import {
   Stack,
   Checkbox,
 } from "@chakra-ui/react";
-
+import {useState , useEffect} from "react"
+import { useAppDispatch } from "../../redux/hook";
+import { updateAllowOC } from "../../redux/slice/contest-slice";
 const Filter = () => {
+  const [allow, setAllow] = useState<(string | number)[]>(["Div. 2", "Div. 3"]);
+  const dispatch = useAppDispatch()
+
+  useEffect(()=>{
+    dispatch(updateAllowOC(allow))
+  }, [allow])
   return (
     <>
       <Flex
@@ -27,8 +35,8 @@ const Filter = () => {
 
           <CheckboxGroup
             colorScheme="twitter"
-            defaultValue={["Div. 2", "Div. 3"]}
-            // onChange={}
+            defaultValue={allow}
+            onChange={(values)=> setAllow(values)}
           >
             <Stack spacing={[13]} direction={["row"]}>
               <Checkbox size="lg" value="Div. 2">
@@ -45,7 +53,15 @@ const Filter = () => {
             The programmer of the will be generate including the current
             contestant and contest.
           </Text>
-          <Button m="2.4rem" size="lg" fontSize="1.4rem" colorScheme="twitter">
+          <Button
+            m="2.4rem"
+            size="lg"
+            fontSize="1.4rem"
+            colorScheme="twitter"
+            onClick={() => {
+              window.api.openPotmWindow();
+            }}
+          >
             Generate POTM
           </Button>
         </Flex>

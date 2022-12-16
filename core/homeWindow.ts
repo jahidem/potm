@@ -3,6 +3,7 @@ import path = require("path");
 
 export default class HomeWindow {
   static thisWindow: Electron.BrowserWindow | null;
+  static potmWindow: Electron.BrowserWindow | null;
   static application: Electron.App;
   static BrowserWindow;
   private static onWindowAllClosed() {
@@ -19,9 +20,9 @@ export default class HomeWindow {
   private static onReady() {
     HomeWindow.thisWindow = new HomeWindow.BrowserWindow({
       width: 1200,
-      height: 680,
-      minWidth: 940,
-      minHeight: 540, 
+      height: 750,
+      minWidth: 1100,
+      minHeight: 720,
       frame: false,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
@@ -33,6 +34,33 @@ export default class HomeWindow {
       HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
     }
   }
+  private static closePotmWindow() {
+    HomeWindow.potmWindow = null;
+  }
+  public static createPotmWindow() {
+    HomeWindow.potmWindow = new BrowserWindow({
+      width: 1200,
+      height: 750,
+      minWidth: 1100,
+      minHeight: 720,
+      // show: false,
+      frame: true,
+      title: "POTM",
+      
+      modal: true,
+      autoHideMenuBar: true,
+      parent: HomeWindow.thisWindow, // Make sure to add parent window here
+
+      // Make sure to add webPreferences with below configuration
+      webPreferences: {},
+    });
+
+    if (HomeWindow.potmWindow != null) {
+    // HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
+    HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
+    HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
+    }
+  }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
     // we pass the Electron.App object and the
@@ -41,11 +69,10 @@ export default class HomeWindow {
     // makes the code easier to write tests for
     HomeWindow.BrowserWindow = browserWindow;
     HomeWindow.application = app;
-    HomeWindow.application.on("window-all-closed", HomeWindow.onWindowAllClosed);
+    HomeWindow.application.on(
+      "window-all-closed",
+      HomeWindow.onWindowAllClosed
+    );
     HomeWindow.application.on("ready", HomeWindow.onReady);
   }
 }
-
-
-// -webkit-app-region: drag;
-// -webkit-user-select: none; 

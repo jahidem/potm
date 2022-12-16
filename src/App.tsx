@@ -3,6 +3,7 @@ import { Box, ChakraProvider } from "@chakra-ui/react";
 import Home from "./screen/homeScreen/Home";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import ReportPotm from "./screen/components/ReportPotm";
 const App = () => {
   return (
     <>
@@ -20,6 +21,7 @@ const App = () => {
               <Routes>
             
                 <Route path="/home" element={<Home />} />
+                <Route path="/potm" element={<ReportPotm />} />
               </Routes>
             </HashRouter>
           </Box>
