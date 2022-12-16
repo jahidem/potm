@@ -27,20 +27,20 @@ const Home = () => {
         </GridItem>
         <GridItem
           colSpan={2}
-          rowSpan={3}
+          rowSpan={4}
           bg="rgb(247, 249, 249,1)"
           borderRadius="11px"
         ></GridItem>
         <GridItem
           colSpan={2}
-          rowSpan={3}
+          rowSpan={4}
           bg="rgb(247, 249, 249,1)"
           borderRadius="11px"
         >
           <Setting />
         </GridItem>
         <GridItem
-          rowSpan={7}
+          rowSpan={6}
           mt="1rem"
           colSpan={4}
           bg="rgb(178,216,216,0.2)"

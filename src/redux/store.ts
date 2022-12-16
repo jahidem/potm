@@ -1,11 +1,13 @@
 import {configureStore} from  '@reduxjs/toolkit';
-import counterReducer from './slice/counter-slice'
 import contestantReducer from './slice/contestant-slice';
+import cfSlice from './slice/afapi-slice'
+import contestSlice from './slice/contest-slice';
 
 export const store  = configureStore({
   reducer:{
-    counter: counterReducer,
-    contstant: contestantReducer
+    contstant: contestantReducer,
+    cfapi: cfSlice,
+    contest: contestSlice
   }
 });
 

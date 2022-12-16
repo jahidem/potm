@@ -22,64 +22,40 @@ import {
   addList,
 } from "../../redux/slice/contestant-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import apiGet, { DataCfInfo } from "../cfApi/apiGet";
+import { fetchContestant, Loading, updateContestantLoading } from "../../redux/slice/afapi-slice";
 
 const Contestant = () => {
-  const fetch = apiGet();
   const contestantList = useAppSelector((state) => state.contstant.list);
+  const handleLoading: Loading = useAppSelector(
+    (state) => state.cfapi.contesttantLoading
+  );
+  const loadedContestant: TypedContestant[] = useAppSelector(
+    (state) => state.cfapi.contestant
+  );
   const dispatch = useAppDispatch();
 
   const [newHandle, setNewHandle] = useState("");
-  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     const findAll = async () => {
-      const list = await window.api.findAllContestant()
+      const list = await window.api.findAllContestant();
       dispatch(addList(list));
     };
     findAll();
   }, []);
-  useEffect(() => {
-    const addToList = async (contestant: TypedContestant) => {
-      fetch(
-        handleData,
-        handleError,
-        "https://codeforces.com/api/user.info?handles=" + newHandle,
+
+  const getContestant = () => {
+    dispatch(
+      fetchContestant([
         {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-    };
-    let contestant: TypedContestant = {
-      id: 0,
-      isValid: false,
-      name: newHandle,
-      info: null,
-    };
-    const handleError = () => {
-      dispatch(addContestant(contestant));
-    };
-    const handleData = (data: DataCfInfo) => {
-      if (data.status == "OK") {
-        contestant = {
-          ...contestant,
-          isValid: true,
-          info: data.result[0],
-          name: data.result[0].handle,
-        };
-        dispatch(addContestant(contestant));
-      }
-    };
-
-    if (adding && newHandle != "") {
-      addToList(contestant);
-    }
-    setAdding(false);
-    setNewHandle("");
-  }, [adding]);
-
+          id: contestantList.length,
+          name: newHandle,
+          isValid: false,
+          info: null,
+        },
+      ])
+    );
+  };
   const colorFromRank = (rank: number): string => {
     if (rank < 1200) return "grey";
     else if (rank < 1400) return "green";
@@ -93,7 +69,7 @@ const Contestant = () => {
   return (
     <>
       <Grid
-        templateRows="repeat(10, 5.4rem)"
+        templateRows="repeat(10, 6rem)"
         templateColumns="repeat(1, 1fr)"
         gap={1}
         bg="rgb(247, 249, 249,1)"
@@ -109,6 +85,7 @@ const Contestant = () => {
             <Text fontWeight="bold" fontSize="1.8rem" color="darkblue">
               Current Contestants
             </Text>
+           
           </Flex>
           <Flex my="1rem" justifyContent="space-between" alignItems="center">
             <Input
@@ -118,36 +95,43 @@ const Contestant = () => {
               value={newHandle}
               onChange={(e) => setNewHandle(e.target.value.replace(/\s/g, ""))}
               mr="1rem"
-              my="0.5rem"
+              mt="0.5rem"
               onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  setAdding(true);
+                if (e.key === "Enter" && handleLoading != Loading.PENDING) {
+                  getContestant();
                 }
               }}
             />
             <Button
               colorScheme="teal"
-              isLoading={adding}
-              onClick={() => setAdding(true)}
-              size= "lg"
+              isLoading={handleLoading == Loading.PENDING}
+              onClick={() => getContestant()}
+              size="lg"
             >
               Add
             </Button>
+            
           </Flex>
+          <Text
+          color="red"
+              hidden ={handleLoading != Loading.FAILED}
+              onClick={() => dispatch(updateContestantLoading(Loading.IDLE))}
+            >
+              not a valid cf handle
+            </Text>
         </GridItem>
         <GridItem rowSpan={8} overflowY="scroll" pr="0.6rem">
           <TableContainer>
-            <Table variant="striped" colorScheme="gray" fontSize="1.4rem" >
+            <Table variant="striped" colorScheme="gray" fontSize="1.4rem">
               <Tbody>
                 {contestantList.map((contestant) => (
                   <Tr key={contestant.name}>
                     <Td>
                       <Flex width="100%" justifyContent="space-between">
                         <Text
-                           
                           fontSize="1.3rem"
                           color={
-                            contestant.isValid && (contestant.info.rating)
+                            contestant.isValid && contestant.info.rating
                               ? colorFromRank(contestant.info.rating)
                               : "black"
                           }

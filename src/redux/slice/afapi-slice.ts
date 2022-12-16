@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios';
-
+import  {addContestant } from "./contestant-slice";
+import {Contest} from "./contest-slice"
+import {loadContest} from "./contest-slice"
 export interface CfInfo{
   rating: number ,
   titlePhoto: string,
@@ -23,7 +25,7 @@ export interface DataCfInfo{
 type GetResponse = {
   data: DataCfInfo;
 };
-enum Loading{
+export enum Loading{
   'IDLE' ,
    'PENDING' ,
     'SUCEEDED' ,
@@ -33,41 +35,63 @@ enum Loading{
 interface ContestantFetchState {
   contestant: Contestant[]
   contesttantLoading: Loading
+  allContest: Contest[],
+  contestLoading: Loading
 }
 
 
-
-const fetchContestant = createAsyncThunk(
-  'cfSlice/fetchContestant',
-  async (list: Contestant[], thunkAPI) => {
-    let url = "https://codeforces.com/api/user.info?handles="
-    list.forEach((contestant, indx)=>{
-      url+=contestant.name;
-      if(indx+1<list.length)
-        url+=";"
-    })
-    const response = await axios.get<GetResponse>(
+export const fetchAllContest = createAsyncThunk(
+  'cfSlice/fetchAllContest',
+  async (time:number, thunkAPI) => {
+    let url = "https://codeforces.com/api/contest.list?gym=false"
+    const response = await axios.get(
        url,
         {
           headers: {
             Accept: "application/json",
           },
         }
-    )
-    return  response.data.data.result.map((val: CfInfo)=>{
+    );
+    thunkAPI.dispatch(loadContest(response.data.result))
+    
+    return  response.data
+  }
+)
+
+
+export const fetchContestant = createAsyncThunk(
+  'cfSlice/fetchContestant',
+  async (list: Contestant[], thunkAPI) => {
+    let url = "https://codeforces.com/api/user.info?handles="
+    list.forEach((contestant)=>{
+      url+=contestant.name+";";
+    })
+    const response = await axios.get(
+       url,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+    );
+    thunkAPI.dispatch(addContestant(response.data.result.map((val)=>{
       const ret:Contestant ={
       id: 0,
       name: val.handle,
       isValid: true,
       info: val}
       return ret;
-    })
+    })[0]))
+    
+    return  response.data
   }
 )
 
 const initialState = {
   contestant: [],
   contesttantLoading: Loading.IDLE,
+  allContest: [],
+  contestLoading: Loading.IDLE
 } as ContestantFetchState
 
 // Then, handle actions in your reducers:
@@ -86,14 +110,30 @@ const cfSlice = createSlice({
 
     builder.addCase(fetchContestant.fulfilled , (state, action) => {
       state.contesttantLoading = Loading.SUCEEDED
-      state.contestant = [...state.contestant , ...action.payload ]
+
+      state.contestant = action.payload.result.map((val)=>{
+        const ret:Contestant ={
+        id: 0,
+        name: val.handle,
+        isValid: true,
+        info: val}
+        return ret;
+      })
+
     })
 
     builder.addCase(fetchContestant.rejected ,(state)=>{
-      state.contesttantLoading = Loading.FAILED
+      state.contesttantLoading = Loading.FAILED 
     })
 
+    builder.addCase(fetchAllContest.pending,(state,action)=>{
+      state.contestLoading = Loading.PENDING
+    })
 
+    builder.addCase(fetchAllContest.fulfilled,(state,action)=>{
+      state.contestLoading = Loading.SUCEEDED
+        state.allContest = action.payload.result
+    })
   },
 })
 
@@ -103,9 +143,3 @@ export default cfSlice.reducer;
 
 
 
-// // Later, dispatch the thunk as needed in the app
-// dispatch(fetchUserById({
-//   id:0,
-//   name: "dihaj",
-//   isValid: false
-// }))
