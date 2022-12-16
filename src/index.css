@@ -25,7 +25,7 @@ body {
 /* Scroll Bar */
 
 ::-webkit-scrollbar {
-  width: 1rem;
+  width: 0.7rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -37,5 +37,5 @@ body {
 ::-webkit-scrollbar-thumb {
   
   border-radius: 0.4rem;
-  background-image: linear-gradient(45deg, #c7dbef 0%, #c8c7eb 100%); 
+  background-image: linear-gradient(45deg, #c7dbefad 0%, #c8c7eba7 100%); 
 }

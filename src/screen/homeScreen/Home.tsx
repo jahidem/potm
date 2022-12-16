@@ -11,31 +11,44 @@ const Home = () => {
       <TopBar />
 
       <Grid
-        h="200px"
+        m="4rem"
         templateRows="repeat(10, 5rem)"
         templateColumns="repeat(6, 1fr)"
         gap={4}
-        m="2rem"
       >
         <GridItem
-          maxW="350px"
+          maxW="320px"
           rowSpan={10}
           colSpan={2}
           bg="rgb(247, 249, 249,1)"
           borderRadius="11px"
-          mx="1rem"
         >
           <Contestant />
         </GridItem>
-        <GridItem colSpan={2}rowSpan={3} bg="rgb(247, 249, 249,1)"  borderRadius="11px">
-            
-          </GridItem>
-        <GridItem colSpan={2} rowSpan={3} bg="rgb(247, 249, 249,1)"  borderRadius="11px">
-          <Setting/>
+        <GridItem
+          colSpan={2}
+          rowSpan={3}
+          bg="rgb(247, 249, 249,1)"
+          borderRadius="11px"
+        ></GridItem>
+        <GridItem
+          colSpan={2}
+          rowSpan={3}
+          bg="rgb(247, 249, 249,1)"
+          borderRadius="11px"
+        >
+          <Setting />
         </GridItem>
-        <GridItem rowSpan={7} mt="1rem" colSpan={4} bg="rgb(178,216,216,0.2)"  borderRadius="11px">
-          <ContestTable/>
-          </GridItem>
+        <GridItem
+          rowSpan={7}
+          mt="1rem"
+          colSpan={4}
+          bg="rgb(178,216,216,0.2)"
+          borderRadius="11px"
+          overflowY="scroll"
+        >
+          <ContestTable />
+        </GridItem>
       </Grid>
     </>
   );

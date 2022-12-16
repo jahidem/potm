@@ -93,8 +93,7 @@ const Contestant = () => {
   return (
     <>
       <Grid
-        h="200px"
-        templateRows="repeat(10, 5rem)"
+        templateRows="repeat(10, 5.4rem)"
         templateColumns="repeat(1, 1fr)"
         gap={1}
         bg="rgb(247, 249, 249,1)"
@@ -136,16 +135,16 @@ const Contestant = () => {
             </Button>
           </Flex>
         </GridItem>
-        <GridItem rowSpan={8} overflowY="scroll">
+        <GridItem rowSpan={8} overflowY="scroll" pr="0.6rem">
           <TableContainer>
-            <Table variant="striped" colorScheme="gray" fontSize="1.4rem">
+            <Table variant="striped" colorScheme="gray" fontSize="1.4rem" >
               <Tbody>
                 {contestantList.map((contestant) => (
                   <Tr key={contestant.name}>
                     <Td>
                       <Flex width="100%" justifyContent="space-between">
                         <Text
-                          position="sticky"
+                           
                           fontSize="1.3rem"
                           color={
                             contestant.isValid && (contestant.info.rating)
@@ -153,6 +152,7 @@ const Contestant = () => {
                               : "black"
                           }
                           fontWeight="600"
+                          textShadow="0.4px 0.1px black"
                         >
                           {contestant.name}
                         </Text>
