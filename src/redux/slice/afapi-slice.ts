@@ -3,18 +3,18 @@ import axios from 'axios';
 import  {addContestant } from "./contestant-slice";
 import {Contest, updateReportRow} from "./contest-slice"
 import {loadContest} from "./contest-slice"
-
-interface Member{
+interface Handle{
   handle: string
 }
-enum ParticipantType{
+
+export enum ParticipantType{
   OUT_OF_COMPETITION= "OUT_OF_COMPETITION",
   CONTESTANT = "CONTESTANT",
   PRACTICE = "PRACTICE"
 
 }
 interface Party{
-  members: Member
+  members: Handle[]
   participantType: ParticipantType,
  
 }

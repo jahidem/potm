@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { StandingRow } from "./afapi-slice";
+import { ParticipantType, StandingRow } from "./afapi-slice";
 
 enum contestType {
   CF,
@@ -23,7 +23,7 @@ export interface Contest {
 }
 interface ReportRow {
   handle: string;
-  problemSolved: number;
+  penalty: number;
   points: number;
 }
 interface ContestState {
@@ -91,7 +91,27 @@ const ContestSlice = createSlice({
       state.allowOC = arr.payload;
     },
     updateReportRow(state, arr: PayloadAction<StandingRow[]>) {
-      const list: ReportRow[] = []
+      let list: ReportRow[] = state.reportRow;
+      arr.payload.forEach((row: StandingRow) => {
+        let reportRow: ReportRow = {
+          handle: row.party.members[0].handle,
+          points: 0,
+          penalty: 0,
+        };
+        if (
+          row.party.participantType == ParticipantType.CONTESTANT ||
+          row.party.participantType == ParticipantType.OUT_OF_COMPETITION
+        ) {
+          if(row.points < 20){
+            reportRow.penalty = row.penalty;
+            
+          }
+          else{
+            reportRow.points = row.points
+
+          }
+        }
+      });
       state.reportRow = list;
     },
   },

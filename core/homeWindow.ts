@@ -29,8 +29,8 @@ export default class HomeWindow {
       },
     });
     if (HomeWindow.thisWindow != null) {
-      // HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
-      HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
+      HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
+      // HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
       HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
     }
   }
@@ -56,8 +56,8 @@ export default class HomeWindow {
     });
 
     if (HomeWindow.potmWindow != null) {
-    // HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
-    HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
+    HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
+    // HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
     HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }
   }
