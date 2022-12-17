@@ -41,7 +41,6 @@ const ReportPotm = () => {
 
   return (
     <>
-      <TopBar context="POTM_WINDOW" />
     </>
   );
 };

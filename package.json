@@ -41,6 +41,8 @@
     "start:desktop": "npm run build:desktop && electron build/main.js",
     "migrate": "cd core && npx prisma migrate dev --name init",
     "studio": "cd core && npx prisma studio",
+    "build": "electron-builder --x64 --ia32",
+    "publish": "build --win -p always",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -69,10 +71,28 @@
     "prisma": "^4.7.1"
   },
   "build": {
-    "appId": "studyante",
+    "appId": "com.jahidem.potm",
+    "productName": "POTM",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "jahidem",
+        "repo": "potm"
+      }
+    ],
     "win": {
-      "target": "NSIS",
-      "icon": "./core/extraResources/icona.jpg"
+      "publish": [
+        "github"
+      ],
+      "target": [
+        {
+          "target": "NSIS",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
     },
     "extraResources": [
       "core/prisma/**/*",
