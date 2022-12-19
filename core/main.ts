@@ -55,6 +55,11 @@ ipcMain.on("OPEN_POTM_WINDOW",(event)=>{
 
 })
 
+ipcMain.on("OPEN_CONTENT_WINDOW",(event, args)=>{
+  HomeWindow.contentWindow(args)
+
+})
+
 //Contestant IPC
 ipcMain.handle("FIND_ALL_CONTESTANT", (event, args) => findAll());
 

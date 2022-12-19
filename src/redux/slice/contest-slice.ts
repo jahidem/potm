@@ -26,6 +26,11 @@ interface ReportRow {
   penalty: number;
   points: number;
 }
+export enum GenerateReport {
+  IDLE = "IDLE",
+  PENDING = "PENDING",
+  DONE = "DONE",
+}
 interface ContestState {
   list: Contest[];
   epochStart: number;
@@ -33,6 +38,7 @@ interface ContestState {
   allowDiv: (string | number)[];
   allowOC: (string | number)[];
   reportRow: ReportRow[];
+  reportGenerate: GenerateReport
 }
 const initialState: ContestState = {
   list: [],
@@ -41,6 +47,7 @@ const initialState: ContestState = {
   allowDiv: [],
   allowOC: [],
   reportRow: [],
+  reportGenerate: GenerateReport.IDLE,
 };
 
 const ContestSlice = createSlice({
@@ -91,6 +98,7 @@ const ContestSlice = createSlice({
       state.allowOC = arr.payload;
     },
     updateReportRow(state, arr: PayloadAction<StandingRow[]>) {
+      console.log("updtRow")
       let list: ReportRow[] = state.reportRow;
       arr.payload.forEach((row: StandingRow) => {
         let reportRow: ReportRow = {
@@ -114,7 +122,11 @@ const ContestSlice = createSlice({
       });
       state.reportRow = list;
     },
+    setGenerateState(state, generate:PayloadAction<GenerateReport>){
+      state.reportGenerate = generate.payload
+    },
   },
+  
 });
 
 export const {
@@ -125,5 +137,6 @@ export const {
   updateAllowDiv,
   updateAllowOC,
   updateReportRow,
+  setGenerateState
 } = ContestSlice.actions;
 export default ContestSlice.reducer;

@@ -7,7 +7,8 @@ export interface Api {
   minimizeWindow: () => void,
   maximizeWindow: () => void,
   openPotmWindow: () => void,
-  closePotm: () => void
+  closePotm: () => void,
+  openContentWindow: (data: string) => void
 }
 
 declare global {

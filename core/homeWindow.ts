@@ -24,18 +24,39 @@ export default class HomeWindow {
       minWidth: 1100,
       minHeight: 720,
       frame: false,
+      backgroundColor: 'white',
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
+        devTools: true
       },
     });
     if (HomeWindow.thisWindow != null) {
-      HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
-      // HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
+      // HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
+      HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
       HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
     }
   }
   private static closePotmWindow() {
     HomeWindow.potmWindow = null;
+  }
+  public static contentWindow(url: string){
+    const win = new BrowserWindow({
+      width: 1200,
+      height: 750,
+      minWidth: 1100,
+      minHeight: 720,
+      frame: true,
+      backgroundColor: 'white',
+      autoHideMenuBar: true,
+      show: false ,
+      parent: HomeWindow.thisWindow, 
+      webPreferences: {
+        devTools: false
+      }})
+    win.loadURL(url);
+    win.once('ready-to-show', () => {
+      win.show()
+    })
   }
   public static createPotmWindow() {
     HomeWindow.potmWindow = new BrowserWindow({
@@ -46,19 +67,19 @@ export default class HomeWindow {
       // show: false,
       frame: true,
       title: "POTM",
-      
+      backgroundColor: 'white',
       modal: true,
       autoHideMenuBar: true,
       parent: HomeWindow.thisWindow, // Make sure to add parent window here
 
       // Make sure to add webPreferences with below configuration
-      webPreferences: {},
+      webPreferences: {devTools: true},
     });
 
     if (HomeWindow.potmWindow != null) {
     HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
-    // HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
-    HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
+    HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
+    // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }
   }
 

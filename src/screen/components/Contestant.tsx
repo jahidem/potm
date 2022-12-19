@@ -151,7 +151,7 @@ const Contestant = () => {
                           fontWeight="600"
                           textShadow="0.4px 0.1px black"
                         >
-                          <Link onClick={()=>{window.open("https://codeforces.com/profile/"+contestant.info.handle);}}>{contestant.name}</Link>
+                          <Link onClick={()=>{window.api.openContentWindow("https://codeforces.com/profile/"+contestant.info.handle);}}>{contestant.name}</Link>
                         </Text>
                         <Flex
                           zIndex="100"

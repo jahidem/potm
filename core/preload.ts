@@ -2,8 +2,6 @@ import { Student, User } from "@prisma/client";
 import {  contextBridge, ipcRenderer } from "electron";
 import { ContestantFront } from "lib/useCaseContestant";
 import os = require("os");
-import channels from "./lib/constant";
-
 contextBridge.exposeInMainWorld("api", {
   printWebContent: () => ipcRenderer.invoke("PRINT_WEB_CONTENT"),
   //Window sizes
@@ -20,5 +18,6 @@ contextBridge.exposeInMainWorld("api", {
 
   //POTM Window
 
-  openPotmWindow: ()=> ipcRenderer.send("OPEN_POTM_WINDOW")
+  openPotmWindow: ()=> ipcRenderer.send("OPEN_POTM_WINDOW"),
+  openContentWindow: (data: string)=> ipcRenderer.send("OPEN_CONTENT_WINDOW", data)
 });

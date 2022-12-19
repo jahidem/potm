@@ -59,7 +59,7 @@ const ContestTable = () => {
             >
               <Td>
                 <Link onClick={()=>{
-                  window.open("https://codeforces.com/contest/"+contest.id);
+                  window.api.openContentWindow("https://codeforces.com/contest/"+contest.id);
 
                 }}> {contest.id} </Link>
               </Td>

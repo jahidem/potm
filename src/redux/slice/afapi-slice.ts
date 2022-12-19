@@ -91,6 +91,7 @@ export const  fetchStandingRow = createAsyncThunk(
           },
         }
     );
+    console.log(response.data)
     thunkAPI.dispatch( updateReportRow(response.data.result.rows))
     
     return  response.data
@@ -173,11 +174,21 @@ const cfSlice = createSlice({
       state.contestLoading = Loading.SUCEEDED
         state.allContest = action.payload.result
     })
+
+      builder.addCase(fetchStandingRow.fulfilled,(state,action)=>{
+        console.log(action.payload)
+      })
+      builder.addCase(fetchStandingRow.rejected,(state)=>{
+        console.log("reject")
+      })
+      builder.addCase(fetchStandingRow.pending,(state)=>{
+        console.log("pending")
+      })
   },
 })
 
 
-export const {updateContestantLoading } = cfSlice.actions;
+export const {updateContestantLoading,  } = cfSlice.actions;
 export default cfSlice.reducer; 
 
 

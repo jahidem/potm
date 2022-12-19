@@ -20,7 +20,7 @@ const TopBar = ( {context}  ) => {
          }
         `}
       </style>
-      <Flex height="3rem" backgroundColor="rgb(229,229,229)" width="100%">
+      <Flex height="3rem" backgroundColor="rgb(229,229,229,0.7)" width="100%">
         <Flex width="25rem" justifyContent="space-around" key={0}>
           <Flex
             className="app-draggable"
