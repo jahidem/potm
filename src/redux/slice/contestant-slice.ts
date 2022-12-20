@@ -14,6 +14,14 @@ const initialState: ContestantState = {
 
 // AsyncThunk
 
+export const contestantListDbToState = createAsyncThunk(
+  "contestant/contestantListDbToState",
+  async (_, thunkAPI) => {
+    const list = await window.api.findAllContestant();
+    thunkAPI.dispatch(addList(list));
+    return list;
+  }
+);
 
 export const getContestantListDb = createAsyncThunk(
   'contestant/getContestantListDb',

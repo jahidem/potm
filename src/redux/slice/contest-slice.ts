@@ -3,14 +3,15 @@ import {
   ReportRow,
   Contest,
   contestPhase,
-  ParticipantType,
-  StandingRow,
-  ThunkState,
+  ContestStanding,
+  contestType,
+  Contestant,
 } from "../../common/types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { saveAll } from "../../../core/lib/useCaseContestant";
 import { RoomState, AppDispatch } from "../store";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { fetchStandingRow } from "./afapi-slice";
 
 export enum GenerateReport {
   IDLE = "IDLE",
@@ -40,7 +41,7 @@ const initialState: ContestState = {
 
 export const contestListDbToState = createAsyncThunk(
   "contest/contestListDbToState",
-  async (num: number = 0, thunkAPI) => {
+  async (_, thunkAPI) => {
     const list = await window.api.findAllContest();
     thunkAPI.dispatch(saveAllContest(list));
     return list;
@@ -65,6 +66,40 @@ export const saveContest = createAsyncThunk(
     return list;
   }
 );
+export const makeReport = createAsyncThunk<
+  // Return type of the payload creator
+  void,
+  // First argument to the payload creator
+  void,
+  {
+    // Optional fields for defining thunkApi field types
+    dispatch: AppDispatch;
+    state: RoomState;
+    extra: {
+      jwt: string;
+    };
+  }
+>("contest/makeReport", async (_, thunkAPI) => {
+  const contestList = thunkAPI.getState().contest.list;
+  const contestantList = thunkAPI.getState().contstant.list;
+  console.log(contestList);
+  // bulild request string
+  let handles = "&handles=";
+  contestantList.map((contestant: Contestant) => {
+    handles += contestant.info.handle + ";";
+  });
+  handles += "&showUnofficial=true";
+
+  for (const contest of contestList) {
+    const url =
+      "https://codeforces.com/api/contest.standings?contestId=" +
+      contest.id +
+      handles;
+    await thunkAPI.dispatch(fetchStandingRow(url));
+  }
+
+  thunkAPI.dispatch(setGenerateState(GenerateReport.DONE));
+});
 
 export const saveContestDb = createAsyncThunk<
   // Return type of the payload creator
@@ -157,27 +192,43 @@ const ContestSlice = createSlice({
     updateAllowOC(state, arr: PayloadAction<(string | number)[]>) {
       state.allowOC = arr.payload;
     },
-    updateReportRow(state, arr: PayloadAction<StandingRow[]>) {
+    updateReportRow(
+      state,
+      contestStanding: PayloadAction<ContestStanding.RootObject>
+    ) {
       console.log("updtRow");
-      let list: ReportRow[] = state.reportRow;
-      arr.payload.forEach((row: StandingRow) => {
+      const arr = contestStanding.payload.result.rows;
+      const contest = contestStanding.payload.result.contest;
+      arr.forEach((row: ContestStanding.Row) => {
         let reportRow: ReportRow = {
           handle: row.party.members[0].handle,
           points: 0,
           penalty: 0,
         };
         if (
-          row.party.participantType == ParticipantType.CONTESTANT ||
-          row.party.participantType == ParticipantType.OUT_OF_COMPETITION
+          row.party.participantType ==
+            ContestStanding.ParticipantType.CONTESTANT ||
+          row.party.participantType ==
+            ContestStanding.ParticipantType.OUT_OF_COMPETITION
         ) {
-          if (row.points < 20) {
+          if (contest.type == contestType.CF) {
+            //calc points
             reportRow.penalty = row.penalty;
           } else {
             reportRow.points = row.points;
           }
         }
+        let exist = false;
+        state.reportRow = state.reportRow.map((row: ReportRow) => {
+          if (row.handle == reportRow.handle) {
+            reportRow.points += row.points;
+            reportRow.penalty += row.penalty;
+            exist = true;
+            return reportRow;
+          } else return row;
+        });
+        if (!exist) state.reportRow.push(reportRow);
       });
-      state.reportRow = list;
     },
     setGenerateState(state, generate: PayloadAction<GenerateReport>) {
       state.reportGenerate = generate.payload;

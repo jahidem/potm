@@ -44,8 +44,7 @@ export const  fetchStandingRow = createAsyncThunk(
           },
         }
     );
-    console.log(response.data)
-    thunkAPI.dispatch( updateReportRow(response.data.result.rows))
+    thunkAPI.dispatch( updateReportRow(response.data))
     
     return  response.data
   }

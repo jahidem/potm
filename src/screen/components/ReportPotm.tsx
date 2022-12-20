@@ -1,14 +1,16 @@
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { useEffect, useState } from "react";
 import {
-  
+  contestListDbToState,
   GenerateReport,
   setGenerateState,
   updateReportRow,
+  makeReport
 } from "../../redux/slice/contest-slice";
 import { fetchStandingRow } from "../../redux/slice/afapi-slice";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { Contest, Contestant } from "../../common/types";
+import { contestantListDbToState } from "../../redux/slice/contestant-slice";
 const ReportPotm = () => {
   const contestList: Contest[] = useAppSelector((state) => state.contest.list);
   const contestantList = useAppSelector((state) => state.contstant.list);
@@ -19,45 +21,54 @@ const ReportPotm = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log(contestList)
-    dispatch(updateReportRow([]));
-    dispatch(setGenerateState(GenerateReport.PENDING));
-    let handles = "&handles=";
-    contestantList.map((contestant: Contestant) => {
-      handles += contestant.info.handle + ";";
-    });
-    handles += "&showUnofficial=true";
-    console.log("sdg");
+    
     const fetchAll = async () => {
-      for (const contest of contestList) {
-        const url =
-          "https://codeforces.com/api/contest.standings?contestId=" +
-          contest.id +
-          handles;
-        const res = await dispatch(fetchStandingRow(url));
-        console.log( res);
-      }
-
-      dispatch(setGenerateState(GenerateReport.DONE));
+      dispatch(setGenerateState(GenerateReport.PENDING));
+      await dispatch(contestListDbToState());
+      await dispatch(contestantListDbToState());
+      await dispatch(makeReport());
     };
 
     fetchAll();
-  }, [dispatch]);
+  }, []);
 
-  return generateReport != GenerateReport.DONE ? (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      height="100%"
-      width="100%"
-    >
-      <Spinner size="xl" color="blueviolet" speed="0.65s" />
-    </Flex>
-  ) : 
-  <Flex flexDir="column">
-  {contestList.map((con) => <Text key={con.id}>{con.name}</Text>)}
-  </Flex>
-  
+  // useEffect(() => {
+  //   const loadAll = async () => {
+  //     dispatch(contestListDbToState());
+  //     dispatch(contestantListDbToState());
+  //   };
+
+  //   loadAll();
+  // }, []);
+  return (
+    generateReport != GenerateReport.DONE ? (
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+        width="100%"
+      >
+        <Spinner size="xl" color="blueviolet" speed="0.65s" />
+      </Flex>
+    ) :
+    <>
+      <Flex flexDir="column">
+        {contestList.map((con) => (
+          <Text key={con.id}>{con.name}</Text>
+        ))}
+      </Flex>
+      <Flex flexDir="column">
+        {contestantList.map((con) => (
+          <Text key={con.name}>{con.name}</Text>
+        ))}
+      </Flex>
+      <Flex flexDir="column">
+        {reportRow.map((con) => (
+          <Text key={con.handle}>{con.handle+" "+con.points}</Text>
+        ))}
+      </Flex>
+    </>
+  );
 };
 
 export default ReportPotm;

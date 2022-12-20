@@ -73,11 +73,14 @@ export default class HomeWindow {
       parent: HomeWindow.thisWindow, // Make sure to add parent window here
 
       // Make sure to add webPreferences with below configuration
-      webPreferences: {devTools: true},
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+        devTools: true
+      },
     });
 
     if (HomeWindow.potmWindow != null) {
-    HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
+    // HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
     HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
     // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }
