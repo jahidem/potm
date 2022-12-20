@@ -31,7 +31,6 @@ export async function saveAll(rawData: ContestantFront[]) {
     }
     return convert
   })
-  console.log(data)
   data.forEach(async(contestant)=>{
   await prisma.contestant.create(
     {
@@ -60,7 +59,6 @@ export async function findAll() {
     }
     return convert;
   });
-  console.log(retAll);
   return retAll;
 }
 
@@ -68,4 +66,6 @@ export async function deleteContestant(data: ContestantFront) {
   const deleteContestant = await prisma.contestant.delete({
     where: {name: data.name},
   })
+
+  return data;
 }

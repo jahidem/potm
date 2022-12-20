@@ -24,3 +24,12 @@ model Contestant{
   CfInfoRank  String?
 }
 
+
+model Contest{
+  id Int @id @unique
+  name String
+  startTimeSeconds Int
+  type String
+  phase String
+}
+

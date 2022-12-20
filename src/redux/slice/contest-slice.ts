@@ -1,31 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ParticipantType, StandingRow } from "./afapi-slice";
+import {
+  ReportRow,
+  Contest,
+  contestPhase,
+  ParticipantType,
+  StandingRow,
+  ThunkState,
+} from "../../common/types";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { saveAll } from "../../../core/lib/useCaseContestant";
+import { RoomState, AppDispatch } from "../store";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
-enum contestType {
-  CF,
-  IOI,
-  ICPC,
-}
-enum contestPhase {
-  BEFORE = "BEFORE",
-  CODING = "CODING",
-  PENDING_SYSTEM_TEST = "PENDING_SYSTEM_TEST",
-  SYSTEM_TEST = "SYSTEM_TEST",
-  FINISHED = "FINISHED",
-}
-export interface Contest {
-  id: number;
-  name: string;
-  type: contestType;
-  phase: contestPhase;
-  startTimeSeconds: number;
-  websiteUrl: string;
-}
-interface ReportRow {
-  handle: string;
-  penalty: number;
-  points: number;
-}
 export enum GenerateReport {
   IDLE = "IDLE",
   PENDING = "PENDING",
@@ -38,7 +24,7 @@ interface ContestState {
   allowDiv: (string | number)[];
   allowOC: (string | number)[];
   reportRow: ReportRow[];
-  reportGenerate: GenerateReport
+  reportGenerate: GenerateReport;
 }
 const initialState: ContestState = {
   list: [],
@@ -50,12 +36,82 @@ const initialState: ContestState = {
   reportGenerate: GenerateReport.IDLE,
 };
 
+// AsyncThunk
+
+export const contestListDbToState = createAsyncThunk(
+  "contest/contestListDbToState",
+  async (num: number = 0, thunkAPI) => {
+    const list = await window.api.findAllContest();
+    thunkAPI.dispatch(saveAllContest(list));
+    return list;
+  }
+);
+
+export const deleteContestDb = createAsyncThunk(
+  "contest/deleteContestDb",
+  async (con: Contest, thunkAPI) => {
+    const conRet: Contest = await window.api.deleteContest(con);
+    thunkAPI.dispatch(deleteContest(conRet));
+    return conRet;
+  }
+);
+
+export const saveContest = createAsyncThunk(
+  "contest/saveContest",
+  async (list: Contest[], { getState, dispatch }) => {
+    dispatch(saveAllContest(list));
+    dispatch(filterAllContest());
+    dispatch(saveContestDb());
+    return list;
+  }
+);
+
+export const saveContestDb = createAsyncThunk<
+  // Return type of the payload creator
+  void,
+  // First argument to the payload creator
+  void,
+  {
+    // Optional fields for defining thunkApi field types
+    dispatch: AppDispatch;
+    state: RoomState;
+    extra: {
+      jwt: string;
+    };
+  }
+>("contest/saveContestDb", async (_, thunkAPI) => {
+  const deleteList = await window.api.findAllContest();
+  console.log(
+    "deleteList_________________________________________________________________________"
+  );
+  console.log(deleteList.length);
+  for (const con of deleteList) {
+    await window.api.deleteContest(con);
+  }
+  const state = thunkAPI.getState();
+  const list: Contest[] = state.contest.list.map((con) => {
+    const retCon: Contest = {
+      id: con.id,
+      name: con.name,
+      phase: con.phase,
+      startTimeSeconds: con.startTimeSeconds,
+      type: con.type,
+    };
+    return retCon;
+  });
+  try {
+    const ret: Contest[] = await window.api.saveContestToDb(list);
+  } catch {
+    console.log("catch");
+  }
+});
+
 const ContestSlice = createSlice({
   name: "contest",
   initialState,
   reducers: {
-    loadContest(state, newContest: PayloadAction<Contest[]>) {
-      state.list = newContest.payload.filter((contest: Contest) => {
+    filterAllContest(state) {
+      let filtered = state.list.filter((contest: Contest) => {
         return (
           new Date(contest.startTimeSeconds * 1000) <
             new Date(state.epochEnd) &&
@@ -78,8 +134,12 @@ const ContestSlice = createSlice({
         );
       });
 
-      state.list = state.list.sort((a, b) => (a.id < b.id ? 1 : 0));
+      state.list = filtered.sort((a, b) => (a.id < b.id ? 1 : 0));
     },
+    saveAllContest(state, list: PayloadAction<Contest[]>) {
+      state.list = list.payload;
+    },
+
     deleteContest(state, delContest: PayloadAction<Contest>) {
       state.list = state.list.filter((contest) => {
         return contest.id != delContest.payload.id;
@@ -98,7 +158,7 @@ const ContestSlice = createSlice({
       state.allowOC = arr.payload;
     },
     updateReportRow(state, arr: PayloadAction<StandingRow[]>) {
-      console.log("updtRow")
+      console.log("updtRow");
       let list: ReportRow[] = state.reportRow;
       arr.payload.forEach((row: StandingRow) => {
         let reportRow: ReportRow = {
@@ -110,33 +170,37 @@ const ContestSlice = createSlice({
           row.party.participantType == ParticipantType.CONTESTANT ||
           row.party.participantType == ParticipantType.OUT_OF_COMPETITION
         ) {
-          if(row.points < 20){
+          if (row.points < 20) {
             reportRow.penalty = row.penalty;
-            
-          }
-          else{
-            reportRow.points = row.points
-
+          } else {
+            reportRow.points = row.points;
           }
         }
       });
       state.reportRow = list;
     },
-    setGenerateState(state, generate:PayloadAction<GenerateReport>){
-      state.reportGenerate = generate.payload
+    setGenerateState(state, generate: PayloadAction<GenerateReport>) {
+      state.reportGenerate = generate.payload;
     },
   },
-  
+
+  extraReducers: (builder) => {
+    builder.addCase(saveContestDb.rejected, (state) => {
+      console.log(state.list.length);
+      console.log("R saveContestDb");
+    });
+  },
 });
 
 export const {
-  loadContest,
+  filterAllContest,
   deleteContest,
   setEpochStart,
   setEpochEnd,
   updateAllowDiv,
   updateAllowOC,
   updateReportRow,
-  setGenerateState
+  setGenerateState,
+  saveAllContest,
 } = ContestSlice.actions;
 export default ContestSlice.reducer;

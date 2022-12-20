@@ -1,7 +1,7 @@
-import { Student, User } from "@prisma/client";
 import {  contextBridge, ipcRenderer } from "electron";
 import { ContestantFront } from "lib/useCaseContestant";
 import os = require("os");
+import { Contest } from "../src/common/types";
 contextBridge.exposeInMainWorld("api", {
   printWebContent: () => ipcRenderer.invoke("PRINT_WEB_CONTENT"),
   //Window sizes
@@ -12,9 +12,16 @@ contextBridge.exposeInMainWorld("api", {
   closePotm: () => {ipcRenderer.send("CLOSE_POTM_WINDOW")},
 
   //Constestant IPC
-  deleteContestant: (data: ContestantFront) => ipcRenderer.invoke("DELETE_CONTESTANT", data),
+  deleteContestant: (data: ContestantFront): Promise<ContestantFront> => ipcRenderer.invoke("DELETE_CONTESTANT", data),
   findAllContestant: ():Promise<ContestantFront[]> => ipcRenderer.invoke("FIND_ALL_CONTESTANT"),
   saveAllContestant: (data: ContestantFront[]): Promise< ContestantFront[]> => ipcRenderer.invoke("SAVE_ALL_CONTESTANT", data),
+
+
+  //Constest IPC
+  deleteContest: (data: Contest): Promise<Contest> => ipcRenderer.invoke("DELETE_CONTEST", data),
+  findAllContest: ():Promise<Contest[]> => ipcRenderer.invoke("FIND_ALL_CONTEST"),
+  saveContestToDb: (data: Contest[]): Promise< Contest[]> => ipcRenderer.invoke("SAVE_ALL_CONTEST", data),
+  
 
   //POTM Window
 

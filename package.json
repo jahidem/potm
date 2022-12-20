@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "homepage": ".",
   "private": true,
-  "main": "build/main.js",
+  "main": "build/core/main.js",
   "dependencies": {
     "@chakra-ui/icons": "^2.0.13",
     "@chakra-ui/react": "^2.4.2",
@@ -38,7 +38,7 @@
     "start:web": "react-scripts start",
     "build:web": "react-scripts build",
     "build:desktop": "tsc -p core/tsconfig.json",
-    "start:desktop": "npm run build:desktop && electron build/main.js",
+    "start:desktop": "npm run build:desktop && electron build/core/main.js",
     "migrate": "cd core && npx prisma migrate dev --name init",
     "studio": "cd core && npx prisma studio",
     "build": "electron-builder --x64 --ia32",
@@ -100,7 +100,7 @@
       "node_modules/@prisma/client/**/*"
     ],
     "extraMetadata": {
-      "main": "build/main.js"
+      "main": "build/core/main.js"
     }
   }
 }

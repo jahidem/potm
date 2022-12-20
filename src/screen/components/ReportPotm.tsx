@@ -1,15 +1,14 @@
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import { useEffect, useState } from "react";
 import {
-  Contest,
+  
   GenerateReport,
   setGenerateState,
   updateReportRow,
 } from "../../redux/slice/contest-slice";
-import { Contestant } from "../../redux/slice/contestant-slice";
-import { fetchStandingRow, Loading } from "../../redux/slice/afapi-slice";
+import { fetchStandingRow } from "../../redux/slice/afapi-slice";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
-
+import { Contest, Contestant } from "../../common/types";
 const ReportPotm = () => {
   const contestList: Contest[] = useAppSelector((state) => state.contest.list);
   const contestantList = useAppSelector((state) => state.contstant.list);

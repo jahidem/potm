@@ -1,57 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios';
 import  {addContestant } from "./contestant-slice";
-import {Contest, updateReportRow} from "./contest-slice"
-import {loadContest} from "./contest-slice"
-interface Handle{
-  handle: string
-}
+import { saveContest, updateReportRow} from "./contest-slice"
+import { Contestant, Contest } from '../../common/types';
+import { Loading } from '../../common/types';
 
-export enum ParticipantType{
-  OUT_OF_COMPETITION= "OUT_OF_COMPETITION",
-  CONTESTANT = "CONTESTANT",
-  PRACTICE = "PRACTICE"
 
-}
-interface Party{
-  members: Handle[]
-  participantType: ParticipantType,
- 
-}
-
-export interface StandingRow{
-  party: Party,
-  points: number
-  penalty: number
-}
-export interface CfInfo{
-  rating: number ,
-  titlePhoto: string,
-  handle:string,
-  avatar: string,
-  firstName: string,
-  rank:string,
- }
- export interface Contestant{
-   id: number
-   name: string,
-   isValid: boolean,
-   info: CfInfo|null
- }
-
-export interface DataCfInfo{
-  status: string;
-  result: CfInfo[];
-};
-type GetResponse = {
-  data: DataCfInfo;
-};
-export enum Loading{
-  'IDLE' ,
-   'PENDING' ,
-    'SUCEEDED' ,
-     'FAILED'
-}
 
 interface ContestantFetchState {
   contestant: Contestant[]
@@ -73,8 +27,7 @@ export const fetchAllContest = createAsyncThunk(
           },
         }
     );
-    thunkAPI.dispatch(loadContest(response.data.result))
-    
+    thunkAPI.dispatch(saveContest(response.data.result))
     return  response.data
   }
 )

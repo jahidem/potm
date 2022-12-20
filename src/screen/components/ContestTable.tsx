@@ -16,7 +16,8 @@ import {
 import { TiDeleteOutline } from "react-icons/ti";
 import {useState} from "react"
 import { useAppSelector } from "../../redux/hook";
-import { Contest, deleteContest } from "../../redux/slice/contest-slice";
+import { deleteContest, deleteContestDb } from "../../redux/slice/contest-slice";
+import { Contest } from "../../common/types";
 import { useAppDispatch } from "../../redux/hook";
 
 const ContestTable = () => {
@@ -80,7 +81,7 @@ const ContestTable = () => {
                       <TiDeleteOutline
                         fontSize="1.8rem"
                         color="crimson"
-                        onClick={()=> dispatch(deleteContest(contest))}
+                        onClick={()=> dispatch(deleteContestDb(contest))}
                       />
                     </Box>
                   </Flex>

@@ -11,24 +11,21 @@ import {
   Button,
   Grid,
   GridItem,
-  Link
-  
+  Link,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { TiDeleteOutline } from "react-icons/ti";
+
 import {
-  Contestant as TypedContestant,
-  addContestant,
+  getContestantListDb,
   removeContestant,
-  CfInfo,
-  addList,
 } from "../../redux/slice/contestant-slice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 import {
   fetchContestant,
-  Loading,
   updateContestantLoading,
 } from "../../redux/slice/afapi-slice";
+import { Contestant as TypedContestant, Loading } from "../../common/types";
 
 const Contestant = () => {
   const contestantList = useAppSelector((state) => state.contstant.list);
@@ -44,8 +41,7 @@ const Contestant = () => {
 
   useEffect(() => {
     const findAll = async () => {
-      const list = await window.api.findAllContestant();
-      dispatch(addList(list));
+      dispatch(getContestantListDb(0));
     };
     findAll();
   }, []);
@@ -151,7 +147,16 @@ const Contestant = () => {
                           fontWeight="600"
                           textShadow="0.4px 0.1px black"
                         >
-                          <Link onClick={()=>{window.api.openContentWindow("https://codeforces.com/profile/"+contestant.info.handle);}}>{contestant.name}</Link>
+                          <Link
+                            onClick={() => {
+                              window.api.openContentWindow(
+                                "https://codeforces.com/profile/" +
+                                  contestant.info.handle
+                              );
+                            }}
+                          >
+                            {contestant.name}
+                          </Link>
                         </Text>
                         <Flex
                           zIndex="100"

@@ -14,11 +14,16 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../redux/hook";
-import { fetchAllContest, Loading } from "../../redux/slice/afapi-slice";
+import { fetchAllContest } from "../../redux/slice/afapi-slice";
+import { Loading } from "../../common/types";
 import {
   setEpochStart,
   setEpochEnd,
   updateAllowDiv,
+  saveAllContest,
+  filterAllContest,
+  saveContest,
+  saveContestDb,
 } from "../../redux/slice/contest-slice";
 
 interface ChooserState {
@@ -36,14 +41,23 @@ const initials = {
 const Setting = () => {
   const contestLoading = useAppSelector((state) => state.cfapi.contestLoading);
   const dispatch = useAppDispatch();
+  const contestList = useAppSelector((state) => state.contest.list);
 
   const [start, setStart] = useState<ChooserState>(initials);
-  const [end, setEnd] = useState<ChooserState>({...initials,month: 12});
+  const [end, setEnd] = useState<ChooserState>({ ...initials, month: 12 });
   const [checkedDiv, setCheckedDiv] = useState<(string | number)[]>([
     "Div. 2",
     "Div. 3",
-    "others"
+    "others",
   ]);
+  const [updateList, setUpdateList] = useState(0);
+
+  useEffect(() => {
+    const update = async () => {
+      dispatch(fetchAllContest(1));
+    };
+    update();
+  }, [updateList]);
 
   const getEpo = (date: ChooserState) => {
     if (date.month && date.year) {
@@ -92,7 +106,9 @@ const Setting = () => {
             width="16rem"
             alignItems="center"
           >
-            <Text fontSize="1.4rem" fontWeight="semibold">From: </Text>
+            <Text fontSize="1.4rem" fontWeight="semibold">
+              From:{" "}
+            </Text>
             <Select
               width="6rem"
               icon={<ChevronDownIcon />}
@@ -150,7 +166,9 @@ const Setting = () => {
             width="15rem"
             alignItems="center"
           >
-            <Text fontSize="1.4rem" fontWeight="semibold">Till: </Text>
+            <Text fontSize="1.4rem" fontWeight="semibold">
+              Till:{" "}
+            </Text>
             <Select
               width="6rem"
               icon={<ChevronDownIcon />}
@@ -222,7 +240,7 @@ const Setting = () => {
               onChange={(value) => setCheckedDiv(value)}
             >
               <Stack spacing={[3]} direction={["row"]}>
-              <Checkbox colorScheme="teal" size="lg" value="Div. 1">
+                <Checkbox colorScheme="teal" size="lg" value="Div. 1">
                   Div. 1
                 </Checkbox>
                 <Checkbox colorScheme="teal" size="lg" value="Div. 2">
@@ -240,7 +258,6 @@ const Setting = () => {
               </Stack>
             </CheckboxGroup>
           </Flex>
-         
         </Box>
 
         <Button
@@ -249,7 +266,7 @@ const Setting = () => {
           fontSize="1.4rem"
           colorScheme="teal"
           isLoading={contestLoading == Loading.PENDING}
-          onClick={() => dispatch(fetchAllContest(1))}
+          onClick={() => setUpdateList(state=> 1 - state)}
         >
           Fetch Contest List
         </Button>

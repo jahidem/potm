@@ -1,27 +1,37 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface CfInfo{
- rating: number ,
- titlePhoto: string,
- handle:string,
- avatar: string,
- firstName: string,
- rank:string,
-}
-export interface Contestant{
-  id: number
-  name: string,
-  isValid: boolean,
-  info: CfInfo|null
-}
-
-
-interface ContestantState{
-  list: Contestant[]
-}
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { Contestant, ThunkState,  } from "../../common/types";
+ 
+ export interface ContestantState{
+   list: Contestant[],
+   constestListState: ThunkState 
+ }
 const initialState: ContestantState = {
   list: [],
+  constestListState: ThunkState.PENDING
 }
+
+
+// AsyncThunk
+
+
+export const getContestantListDb = createAsyncThunk(
+  'contestant/getContestantListDb',
+  async ( num:number = 0,thunkAPI) => {
+    const list = await window.api.findAllContestant();
+    thunkAPI.dispatch(addList(list));
+    return  list
+  }
+)
+
+export const deleteContestantDb = createAsyncThunk(
+  'contestant/deleteContestantDb',
+  async ( con:Contestant ,thunkAPI) => {
+    const conRet: Contestant = await window.api.deleteContestant(con);
+    thunkAPI.dispatch(removeContestant(conRet));
+    return  conRet
+  }
+)
 
 const ContestantSlice = createSlice(
   {
@@ -48,7 +58,23 @@ const ContestantSlice = createSlice(
       state.list =  list.payload
      }
 
+    },
+    extraReducers: (builder) =>{
+      builder.addCase(getContestantListDb.fulfilled, (state)=>{
+        state.constestListState = ThunkState.FULFILLED
+      })
+
+      builder.addCase(getContestantListDb.pending,(state)=>{
+        state.constestListState = ThunkState.PENDING
+      })
+
+      builder.addCase(getContestantListDb.rejected,(state)=>{
+        state.constestListState = ThunkState.REJECTED
+      })
     }
+
+
+
   }
 );
 
