@@ -23,7 +23,7 @@ https://user-images.githubusercontent.com/54525656/208222151-b17f00b8-79bd-4bff-
 
 
 
-## Teach Statck:
+## Tech Statck:
  - Frontend `React`
  - UI library `Chakra UI`
  - State mangement `React Redux toolkit`
