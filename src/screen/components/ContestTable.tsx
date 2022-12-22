@@ -94,7 +94,7 @@ const ContestTable = () => {
       </Table>
     </TableContainer>
     : <Flex width="100%" height="100%" justifyContent="center" alignItems="center">
-        <Text fontSize="2.4rem" color="gray">No Contest Found</Text>
+        <Text fontSize="2.4rem" color="gray">No Contest Fetched</Text>
     </Flex>
   );
 };

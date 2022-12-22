@@ -22,6 +22,7 @@ export type Contest = {
   phase: string
 }
 export interface ReportRow {
+  rank: number | null
   handle: string;
   penalty: number;
   points: number;

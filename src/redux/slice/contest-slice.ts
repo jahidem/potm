@@ -36,7 +36,32 @@ const initialState: ContestState = {
   reportRow: [],
   reportGenerate: GenerateReport.IDLE,
 };
+const calculatePoints = (
+  contest: ContestStanding.Contest,
+  row: ContestStanding.Row,
+  reportRow: ReportRow
+) => {
+  const eduDiv2 = [0, 500, 1250, 2250, 3750, 5500, 7500, 9750, 12250];
+  const cfDiv3 = [0, 250, 750, 1500, 2500, 3750, 5250, 7000, 9000];
 
+  if (
+    row.party.participantType == ContestStanding.ParticipantType.CONTESTANT ||
+    row.party.participantType ==
+      ContestStanding.ParticipantType.OUT_OF_COMPETITION
+  ) {
+    if (contest.type == contestType.CF) {
+      reportRow.points = row.points;
+    } else if (contest.name.includes("Div. 2")) {
+      reportRow.points = eduDiv2[row.points];
+      reportRow.penalty = row.penalty;
+    } else if (contest.name.includes("Div. 3")) {
+      reportRow.points = cfDiv3[row.points];
+      reportRow.penalty = row.penalty;
+    }
+  }
+  console.log(reportRow);
+  return reportRow;
+};
 // AsyncThunk
 
 export const contestListDbToState = createAsyncThunk(
@@ -169,10 +194,11 @@ const ContestSlice = createSlice({
         );
       });
 
-      state.list = filtered.sort((a, b) => (a.id < b.id ? 1 : 0));
+      state.list = filtered;
     },
     saveAllContest(state, list: PayloadAction<Contest[]>) {
-      state.list = list.payload;
+      const sortedList = list.payload.sort((a, b) => (a.id < b.id ? 1 : 0));
+      state.list = sortedList;
     },
 
     deleteContest(state, delContest: PayloadAction<Contest>) {
@@ -198,37 +224,32 @@ const ContestSlice = createSlice({
     ) {
       console.log("updtRow");
       const arr = contestStanding.payload.result.rows;
-      const contest = contestStanding.payload.result.contest;
+      let finalList = state.reportRow;
+      const contest: ContestStanding.Contest =
+        contestStanding.payload.result.contest;
       arr.forEach((row: ContestStanding.Row) => {
-        let reportRow: ReportRow = {
-          handle: row.party.members[0].handle,
-          points: 0,
-          penalty: 0,
-        };
-        if (
-          row.party.participantType ==
-            ContestStanding.ParticipantType.CONTESTANT ||
-          row.party.participantType ==
-            ContestStanding.ParticipantType.OUT_OF_COMPETITION
-        ) {
-          if (contest.type == contestType.CF) {
-            //calc points
-            reportRow.penalty = row.penalty;
-          } else {
-            reportRow.points = row.points;
-          }
-        }
-        let exist = false;
-        state.reportRow = state.reportRow.map((row: ReportRow) => {
-          if (row.handle == reportRow.handle) {
-            reportRow.points += row.points;
-            reportRow.penalty += row.penalty;
-            exist = true;
-            return reportRow;
-          } else return row;
+        row.party.members.forEach((mem) => {
+          let reportRow: ReportRow = {
+            rank: 0,
+            handle: mem.handle,
+            points: 0,
+            penalty: 0,
+          };
+          reportRow = calculatePoints(contest, row, reportRow);
+          let exist = false;
+          finalList = finalList.map((row2: ReportRow) => {
+            if (row2.handle == reportRow.handle) {
+              row2.points += reportRow.points;
+              row2.penalty += reportRow.penalty;
+              exist = true;
+            }
+            return row2;
+          });
+          if (!exist) finalList.push(reportRow);
         });
-        if (!exist) state.reportRow.push(reportRow);
       });
+
+      state.reportRow = finalList;
     },
     setGenerateState(state, generate: PayloadAction<GenerateReport>) {
       state.reportGenerate = generate.payload;
