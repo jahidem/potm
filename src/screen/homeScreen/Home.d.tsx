@@ -1,7 +1,7 @@
 import { Contestant, Contest } from "../../common/types"; 
 export interface Api {
   preloadSucess: string,
-
+  printWebContent: () => void
   //api contestant
   findAllContestant: () => Promise<Contestant[]>,
   saveAllContestant: (data: Contestant[]) => Promise<void>,

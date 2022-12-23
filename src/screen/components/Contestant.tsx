@@ -9,23 +9,22 @@ import {
   Box,
   Input,
   Button,
-  Grid,
-  GridItem,
   Link,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { TiDeleteOutline } from "react-icons/ti";
+} from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import { TiDeleteOutline } from 'react-icons/ti';
 
 import {
   getContestantListDb,
   removeContestant,
-} from "../../redux/slice/contestant-slice";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+} from '../../redux/slice/contestant-slice';
+import { useAppDispatch, useAppSelector } from '../../redux/hook';
 import {
   fetchContestant,
   updateContestantLoading,
-} from "../../redux/slice/afapi-slice";
-import { Contestant as TypedContestant, Loading } from "../../common/types";
+} from '../../redux/slice/cfapi-slice';
+import { Contestant as TypedContestant, Loading } from '../../common/types';
+import { CODEFORCES_PROFILE, colorFromRank } from '../../common/utility';
 
 const Contestant = () => {
   const contestantList = useAppSelector((state) => state.contstant.list);
@@ -37,7 +36,7 @@ const Contestant = () => {
   );
   const dispatch = useAppDispatch();
 
-  const [newHandle, setNewHandle] = useState("");
+  const [newHandle, setNewHandle] = useState('');
 
   useEffect(() => {
     const findAll = async () => {
@@ -48,7 +47,7 @@ const Contestant = () => {
 
   const getContestant = () => {
     const handle = newHandle;
-    if (handle != "")
+    if (handle != '')
       dispatch(
         fetchContestant([
           {
@@ -59,16 +58,7 @@ const Contestant = () => {
           },
         ])
       );
-    setNewHandle("");
-  };
-  const colorFromRank = (rank: number): string => {
-    if (rank < 1200) return "grey";
-    else if (rank < 1400) return "green";
-    else if (rank < 1600) return "cyan";
-    else if (rank < 1900) return "blue";
-    else if (rank < 2200) return "violet";
-    else if (rank < 2400) return "orange";
-    else return "red";
+    setNewHandle('');
   };
 
   return (
@@ -77,7 +67,6 @@ const Contestant = () => {
         bg="rgb(247, 249, 249,1)"
         borderRadius="11px"
         p="2.4rem 1rem"
-
         flexDir="column"
       >
         <Flex height="120px" flexDir="column">
@@ -101,11 +90,11 @@ const Contestant = () => {
               size="lg"
               fontSize="1.4rem"
               value={newHandle}
-              onChange={(e) => setNewHandle(e.target.value.replace(/\s/g, ""))}
+              onChange={(e) => setNewHandle(e.target.value.replace(/\s/g, ''))}
               mr="1rem"
               mt="0.5rem"
               onKeyPress={(e) => {
-                if (e.key === "Enter" && handleLoading != Loading.PENDING) {
+                if (e.key === 'Enter' && handleLoading != Loading.PENDING) {
                   getContestant();
                 }
               }}
@@ -128,7 +117,7 @@ const Contestant = () => {
             not a valid cf handle
           </Text>
         </Flex>
-        <Box overflowY="scroll" pr="0.6rem" maxH ="calc( 100vh - 260px)">
+        <Box overflowY="scroll" pr="0.6rem" maxH="calc( 100vh - 260px)">
           <TableContainer mx="0.5rem">
             <Table variant="striped" colorScheme="gray" fontSize="1.4rem">
               <Tbody>
@@ -141,7 +130,7 @@ const Contestant = () => {
                           color={
                             contestant.isValid && contestant.info.rating
                               ? colorFromRank(contestant.info.rating)
-                              : "black"
+                              : 'black'
                           }
                           fontWeight="600"
                           textShadow="0.4px 0.1px black"
@@ -149,8 +138,7 @@ const Contestant = () => {
                           <Link
                             onClick={() => {
                               window.api.openContentWindow(
-                                "https://codeforces.com/profile/" +
-                                  contestant.info.handle
+                                CODEFORCES_PROFILE + contestant.info.handle
                               );
                             }}
                           >
@@ -169,7 +157,7 @@ const Contestant = () => {
                         >
                           <Box
                             _hover={{
-                              cursor: "pointer",
+                              cursor: 'pointer',
                             }}
                           >
                             <TiDeleteOutline

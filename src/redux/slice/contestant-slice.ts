@@ -2,14 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Contestant, ThunkState,  } from "../../common/types";
  
- export interface ContestantState{
-   list: Contestant[],
-   constestListState: ThunkState 
- }
-const initialState: ContestantState = {
-  list: [],
-  constestListState: ThunkState.PENDING
-}
+
 
 
 // AsyncThunk
@@ -40,6 +33,18 @@ export const deleteContestantDb = createAsyncThunk(
     return  conRet
   }
 )
+
+
+// Slice Setup
+
+interface ContestantState{
+  list: Contestant[],
+  constestListState: ThunkState 
+}
+const initialState: ContestantState = {
+ list: [],
+ constestListState: ThunkState.PENDING
+}
 
 const ContestantSlice = createSlice(
   {

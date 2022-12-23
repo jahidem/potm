@@ -1,5 +1,6 @@
-import { BrowserWindow } from "electron";
-import path = require("path");
+import { BrowserWindow, Menu, IpcRenderer, ipcRenderer } from 'electron';
+import { printPdf } from './lib/utils';
+import path = require('path');
 
 export default class HomeWindow {
   static thisWindow: Electron.BrowserWindow | null;
@@ -7,7 +8,7 @@ export default class HomeWindow {
   static application: Electron.App;
   static BrowserWindow;
   private static onWindowAllClosed() {
-    if (process.platform !== "darwin") {
+    if (process.platform !== 'darwin') {
       HomeWindow.application.quit();
     }
   }
@@ -26,20 +27,21 @@ export default class HomeWindow {
       frame: false,
       backgroundColor: 'white',
       webPreferences: {
-        preload: path.join(__dirname, "preload.js"),
-        devTools: true
+        preload: path.join(__dirname, 'preload.js'),
+        devTools: true,
       },
     });
     if (HomeWindow.thisWindow != null) {
       // HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
-      HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
-      HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
+      HomeWindow.thisWindow.loadURL('http://localhost:3000/#/home');
+
+      HomeWindow.thisWindow.on('closed', HomeWindow.onClose);
     }
   }
   private static closePotmWindow() {
     HomeWindow.potmWindow = null;
   }
-  public static contentWindow(url: string){
+  public static contentWindow(url: string) {
     const win = new BrowserWindow({
       width: 1200,
       height: 750,
@@ -48,15 +50,16 @@ export default class HomeWindow {
       frame: true,
       backgroundColor: 'white',
       autoHideMenuBar: true,
-      show: false ,
-      parent: HomeWindow.thisWindow, 
+      show: false,
+      parent: HomeWindow.thisWindow,
       webPreferences: {
-        devTools: false
-      }})
+        devTools: false,
+      },
+    });
     win.loadURL(url);
     win.once('ready-to-show', () => {
-      win.show()
-    })
+      win.show();
+    });
   }
   public static createPotmWindow() {
     HomeWindow.potmWindow = new BrowserWindow({
@@ -66,23 +69,43 @@ export default class HomeWindow {
       minHeight: 720,
       // show: false,
       frame: true,
-      title: "POTM",
+      title: 'POTM',
       backgroundColor: 'white',
       modal: true,
-      autoHideMenuBar: true,
       parent: HomeWindow.thisWindow, // Make sure to add parent window here
 
       // Make sure to add webPreferences with below configuration
       webPreferences: {
-        preload: path.join(__dirname, "preload.js"),
-        devTools: true
+        preload: path.join(__dirname, 'preload.js'),
+        devTools: true,
       },
     });
 
     if (HomeWindow.potmWindow != null) {
-    // HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
-    HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
-    // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
+      // HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
+      const template = [
+        {
+          label: 'File',
+          submenu: [
+            {
+              label: 'Print',
+              click: ()=>{
+                printPdf(HomeWindow.potmWindow.webContents )
+              }
+            },
+            {
+              label: 'Exit',
+              click: ()=>{
+                HomeWindow.potmWindow.close()
+              }
+            },
+          ],
+        },
+      ];
+      const menu = Menu.buildFromTemplate(template);
+      Menu.setApplicationMenu(menu);
+      HomeWindow.potmWindow.loadURL('http://localhost:3000/#/potm');
+      // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }
   }
 
@@ -94,9 +117,9 @@ export default class HomeWindow {
     HomeWindow.BrowserWindow = browserWindow;
     HomeWindow.application = app;
     HomeWindow.application.on(
-      "window-all-closed",
+      'window-all-closed',
       HomeWindow.onWindowAllClosed
     );
-    HomeWindow.application.on("ready", HomeWindow.onReady);
+    HomeWindow.application.on('ready', HomeWindow.onReady);
   }
 }

@@ -11,7 +11,7 @@
   - The Standings can be exported as a pdf file
    
 &nbsp;
-> The scoring fot the standings is according to this  [Scoring Criteria.pdf](https://github.com/jahidem/potm/blob/master/docs/ScoringCriteria.pdf)
+> The scoring for the standings is according to this  [Scoring Criteria.pdf](https://github.com/jahidem/potm/blob/master/docs/ScoringCriteria.pdf)
 
 <img src="./docs/potm1.png" alt="drawing"  width="800"/> 
 
@@ -26,7 +26,7 @@ https://user-images.githubusercontent.com/54525656/208222151-b17f00b8-79bd-4bff-
 ## Tech Statck:
  - Frontend `React`
  - UI library `Chakra UI`
- - State mangement `React Redux toolkit`
+ - State management `React Redux toolkit`
  - TypeScript ORM  `Prisma js`
  - Permanent persistance `Sqlite DB`
  - Application framework `Electron`

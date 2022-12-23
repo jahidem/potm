@@ -5,7 +5,6 @@ import {
 } from "react-icons/vsc";
 
 import { Flex, Text } from "@chakra-ui/react";
-import React from "react";
 export interface BarSetting{
   host: string
 }

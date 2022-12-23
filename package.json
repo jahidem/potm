@@ -1,7 +1,7 @@
 {
   "name": "potm",
   "productName": "potm",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "homepage": ".",
   "private": true,
   "main": "build/core/main.js",

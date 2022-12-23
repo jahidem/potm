@@ -1,13 +1,12 @@
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
-import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from '../../redux/hook';
+import { useEffect, useState } from 'react';
 import {
   contestListDbToState,
-  GenerateReport,
   setGenerateState,
   updateReportRow,
   makeReport,
-} from "../../redux/slice/contest-slice";
-import { fetchStandingRow } from "../../redux/slice/afapi-slice";
+} from '../../redux/slice/contest-slice';
+import { fetchStandingRow } from '../../redux/slice/cfapi-slice';
 import {
   Flex,
   Spinner,
@@ -23,9 +22,14 @@ import {
   TableCaption,
   Link,
   Button,
-} from "@chakra-ui/react";
-import { Contest, Contestant, ReportRow } from "../../common/types";
-import { contestantListDbToState } from "../../redux/slice/contestant-slice";
+} from '@chakra-ui/react';
+import {
+  Contest,
+  Contestant,
+  GenerateReport,
+  ReportRow,
+} from '../../common/types';
+import { contestantListDbToState } from '../../redux/slice/contestant-slice';
 const ReportPotm = () => {
   const reportRow: ReportRow[] = useAppSelector(
     (state) => state.contest.reportRow
@@ -34,7 +38,7 @@ const ReportPotm = () => {
     (state) => state.contest.reportGenerate
   );
   const dispatch = useAppDispatch();
-  const [nowOnRow, setNowOnRow] = useState("");
+  const [nowOnRow, setNowOnRow] = useState('');
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -64,54 +68,55 @@ const ReportPotm = () => {
           alignItems="center"
           height="100%"
           width="100%"
-          overflowY="scroll"
         >
           <Spinner size="xl" color="blueviolet" speed="0.65s" />
         </Flex>
       ) : (
-        <TableContainer
-          fontSize="1.4rem"
-          maxW="900px"
-          mx="auto"
-          padding="1rem"
-          mt="4rem"
-        >
-          <Table size="md" fontSize="1.4rem">
-            <TableCaption
-              fontSize="1.6rem"
-              placement="top"
-              color="darkblue"
-              my="1.4rem"
-            >
-              Contestant and their points
-            </TableCaption>
-            <Thead>
-              <Tr>
-                <Th fontSize="1.2rem">Rank</Th>
-                <Th fontSize="1.2rem">Handle</Th>
-                <Th fontSize="1.2rem">Points</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {reportRow.map((rep) => (
-                <Tr
-                  key={rep.handle}
-                  onMouseEnter={() => {
-                    setNowOnRow(rep.handle);
-                  }}
-                  onMouseLeave={() => {
-                    setNowOnRow("");
-                  }}
-                  bgColor={rep.handle == nowOnRow ? "white" : "none"}
-                >
-                  <Td>{rep.rank}</Td>
-                  <Td> {rep.handle} </Td>
-                  <Td isNumeric>{rep.points - rep.penalty}</Td>
+        <Box w="100%" h="100%" overflow="scroll">
+          <TableContainer
+            fontSize="1.4rem"
+            maxW="900px"
+            mx="auto"
+            padding="1rem"
+            mt="4rem"
+          >
+            <Table size="md" fontSize="1.4rem" variant="striped">
+              <TableCaption
+                fontSize="1.6rem"
+                placement="top"
+                color="darkblue"
+                my="1.4rem"
+              >
+                Contestant and their points
+              </TableCaption>
+              <Thead>
+                <Tr>
+                  <Th fontSize="1.2rem">Rank</Th>
+                  <Th fontSize="1.2rem">Handle</Th>
+                  <Th fontSize="1.2rem">Points</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+              </Thead>
+              <Tbody>
+                {reportRow.map((rep) => (
+                  <Tr
+                    key={rep.handle}
+                    onMouseEnter={() => {
+                      setNowOnRow(rep.handle);
+                    }}
+                    onMouseLeave={() => {
+                      setNowOnRow('');
+                    }}
+                    bgColor={rep.handle == nowOnRow ? 'white' : 'none'}
+                  >
+                    <Td>{rep.rank}</Td>
+                    <Td> {rep.handle} </Td>
+                    <Td isNumeric>{rep.points - rep.penalty}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
     </>
   );

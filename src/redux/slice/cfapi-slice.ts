@@ -7,13 +7,7 @@ import { Loading } from '../../common/types';
 
 
 
-interface ContestantFetchState {
-  contestant: Contestant[]
-  contesttantLoading: Loading
-  allContest: Contest[],
-  contestLoading: Loading
-}
-
+// ThunkApis
 
 export const fetchAllContest = createAsyncThunk(
   'cfSlice/fetchAllContest',
@@ -79,6 +73,16 @@ export const fetchContestant = createAsyncThunk(
   }
 )
 
+
+// Slice Setup
+
+interface ContestantFetchState {
+  contestant: Contestant[]
+  contesttantLoading: Loading
+  allContest: Contest[],
+  contestLoading: Loading
+}
+
 const initialState = {
   contestant: [],
   contesttantLoading: Loading.IDLE,
@@ -86,7 +90,7 @@ const initialState = {
   contestLoading: Loading.IDLE
 } as ContestantFetchState
 
-// Then, handle actions in your reducers:
+
 const cfSlice = createSlice({
   name: 'cfSlice',
   initialState,

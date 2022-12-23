@@ -1,7 +1,6 @@
 import {
   Flex,
   Button,
-  Box,
   Text,
   CheckboxGroup,
   Stack,

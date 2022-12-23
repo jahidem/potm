@@ -1,16 +1,22 @@
 // Contest types
 
-export enum contestType {
+export enum ContestType {
   CF = "CF",
   IOI = "IOI",
   ICPC = "ICPC",
 }
-export enum contestPhase {
+export enum ContestPhase {
   BEFORE = "BEFORE",
   CODING = "CODING",
   PENDING_SYSTEM_TEST = "PENDING_SYSTEM_TEST",
   SYSTEM_TEST = "SYSTEM_TEST",
   FINISHED = "FINISHED",
+}
+
+export enum GenerateReport {
+  IDLE = 'IDLE',
+  PENDING = 'PENDING',
+  DONE = 'DONE',
 }
 
 

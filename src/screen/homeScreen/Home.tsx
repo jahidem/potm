@@ -11,7 +11,7 @@ const Home = () => {
     <>
       <TopBar context="HOME"/>
       <Grid
-      maxW="1300px"
+      maxW="1333px"
         m="4rem auto"
         px="2rem"
         templateRows="repeat(10, 5.6rem)"

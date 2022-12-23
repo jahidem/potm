@@ -1,71 +1,26 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   ReportRow,
   Contest,
-  contestPhase,
+  ContestPhase,
   ContestStanding,
-  contestType,
+  ContestType,
   Contestant,
-} from "../../common/types";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { saveAll } from "../../../core/lib/useCaseContestant";
-import { RoomState, AppDispatch } from "../store";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { fetchStandingRow } from "./afapi-slice";
+  GenerateReport,
+} from '../../common/types';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { saveAll } from '../../../core/lib/useCaseContestant';
+import { RoomState, AppDispatch } from '../store';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { fetchStandingRow } from './cfapi-slice';
+import { calculatePoints } from '../../common/utility';
 
-export enum GenerateReport {
-  IDLE = "IDLE",
-  PENDING = "PENDING",
-  DONE = "DONE",
-}
-interface ContestState {
-  list: Contest[];
-  epochStart: number;
-  epochEnd: number;
-  allowDiv: (string | number)[];
-  allowOC: (string | number)[];
-  reportRow: ReportRow[];
-  reportGenerate: GenerateReport;
-}
-const initialState: ContestState = {
-  list: [],
-  epochStart: 0,
-  epochEnd: 0,
-  allowDiv: [],
-  allowOC: [],
-  reportRow: [],
-  reportGenerate: GenerateReport.IDLE,
-};
-const calculatePoints = (
-  contest: ContestStanding.Contest,
-  row: ContestStanding.Row,
-  reportRow: ReportRow
-) => {
-  const eduDiv2 = [0, 500, 1250, 2250, 3750, 5500, 7500, 9750, 12250];
-  const cfDiv3 = [0, 250, 750, 1500, 2500, 3750, 5250, 7000, 9000];
 
-  if (
-    row.party.participantType == ContestStanding.ParticipantType.CONTESTANT ||
-    row.party.participantType ==
-      ContestStanding.ParticipantType.OUT_OF_COMPETITION
-  ) {
-    if (contest.type == contestType.CF) {
-      reportRow.points = row.points;
-    } else if (contest.name.includes("Div. 2")) {
-      reportRow.points = eduDiv2[row.points];
-      reportRow.penalty = row.penalty;
-    } else if (contest.name.includes("Div. 3")) {
-      reportRow.points = cfDiv3[row.points];
-      reportRow.penalty = row.penalty;
-    }
-  }
-  console.log(reportRow);
-  return reportRow;
-};
+
 // AsyncThunk
 
 export const contestListDbToState = createAsyncThunk(
-  "contest/contestListDbToState",
+  'contest/contestListDbToState',
   async (_, thunkAPI) => {
     const list = await window.api.findAllContest();
     thunkAPI.dispatch(saveAllContest(list));
@@ -74,7 +29,7 @@ export const contestListDbToState = createAsyncThunk(
 );
 
 export const deleteContestDb = createAsyncThunk(
-  "contest/deleteContestDb",
+  'contest/deleteContestDb',
   async (con: Contest, thunkAPI) => {
     const conRet: Contest = await window.api.deleteContest(con);
     thunkAPI.dispatch(deleteContest(conRet));
@@ -83,7 +38,7 @@ export const deleteContestDb = createAsyncThunk(
 );
 
 export const saveContest = createAsyncThunk(
-  "contest/saveContest",
+  'contest/saveContest',
   async (list: Contest[], { getState, dispatch }) => {
     dispatch(saveAllContest(list));
     dispatch(filterAllContest());
@@ -92,32 +47,29 @@ export const saveContest = createAsyncThunk(
   }
 );
 export const makeReport = createAsyncThunk<
-  // Return type of the payload creator
   void,
-  // First argument to the payload creator
   void,
   {
-    // Optional fields for defining thunkApi field types
     dispatch: AppDispatch;
     state: RoomState;
     extra: {
       jwt: string;
     };
   }
->("contest/makeReport", async (_, thunkAPI) => {
+>('contest/makeReport', async (_, thunkAPI) => {
   const contestList = thunkAPI.getState().contest.list;
   const contestantList = thunkAPI.getState().contstant.list;
   console.log(contestList);
   // bulild request string
-  let handles = "&handles=";
+  let handles = '&handles=';
   contestantList.map((contestant: Contestant) => {
-    handles += contestant.info.handle + ";";
+    handles += contestant.info.handle + ';';
   });
-  handles += "&showUnofficial=true";
+  handles += '&showUnofficial=true';
 
   for (const contest of contestList) {
     const url =
-      "https://codeforces.com/api/contest.standings?contestId=" +
+      'https://codeforces.com/api/contest.standings?contestId=' +
       contest.id +
       handles;
     await thunkAPI.dispatch(fetchStandingRow(url));
@@ -129,20 +81,18 @@ export const makeReport = createAsyncThunk<
 export const saveContestDb = createAsyncThunk<
   // Return type of the payload creator
   void,
-  // First argument to the payload creator
   void,
   {
-    // Optional fields for defining thunkApi field types
     dispatch: AppDispatch;
     state: RoomState;
     extra: {
       jwt: string;
     };
   }
->("contest/saveContestDb", async (_, thunkAPI) => {
+>('contest/saveContestDb', async (_, thunkAPI) => {
   const deleteList = await window.api.findAllContest();
   console.log(
-    "deleteList_________________________________________________________________________"
+    'deleteList_________________________________________________________________________'
   );
   console.log(deleteList.length);
   for (const con of deleteList) {
@@ -162,12 +112,33 @@ export const saveContestDb = createAsyncThunk<
   try {
     const ret: Contest[] = await window.api.saveContestToDb(list);
   } catch {
-    console.log("catch");
+    console.log('catch');
   }
 });
 
+// Slice Setup
+
+interface ContestState {
+  list: Contest[];
+  epochStart: number;
+  epochEnd: number;
+  allowDiv: (string | number)[];
+  allowOC: (string | number)[];
+  reportRow: ReportRow[];
+  reportGenerate: GenerateReport;
+}
+const initialState: ContestState = {
+  list: [],
+  epochStart: 0,
+  epochEnd: 0,
+  allowDiv: [],
+  allowOC: [],
+  reportRow: [],
+  reportGenerate: GenerateReport.IDLE,
+};
+
 const ContestSlice = createSlice({
-  name: "contest",
+  name: 'contest',
   initialState,
   reducers: {
     filterAllContest(state) {
@@ -177,20 +148,20 @@ const ContestSlice = createSlice({
             new Date(state.epochEnd) &&
           new Date(state.epochStart) <=
             new Date(contest.startTimeSeconds * 1000) &&
-          contest.phase == contestPhase.FINISHED &&
-          ((contest.name.includes("Div. 1") &&
-            state.allowDiv.includes("Div. 1")) ||
-            (contest.name.includes("Div. 2") &&
-              state.allowDiv.includes("Div. 2")) ||
-            (contest.name.includes("Div. 3") &&
-              state.allowDiv.includes("Div. 3")) ||
-            (contest.name.includes("Div. 4") &&
-              state.allowDiv.includes("Div. 4")) ||
-            (state.allowDiv.includes("others") &&
-              !contest.name.includes("Div. 3") &&
-              !contest.name.includes("Div. 2") &&
-              !contest.name.includes("Div. 4") &&
-              !contest.name.includes("Div. 1")))
+          contest.phase == ContestPhase.FINISHED &&
+          ((contest.name.includes('Div. 1') &&
+            state.allowDiv.includes('Div. 1')) ||
+            (contest.name.includes('Div. 2') &&
+              state.allowDiv.includes('Div. 2')) ||
+            (contest.name.includes('Div. 3') &&
+              state.allowDiv.includes('Div. 3')) ||
+            (contest.name.includes('Div. 4') &&
+              state.allowDiv.includes('Div. 4')) ||
+            (state.allowDiv.includes('others') &&
+              !contest.name.includes('Div. 3') &&
+              !contest.name.includes('Div. 2') &&
+              !contest.name.includes('Div. 4') &&
+              !contest.name.includes('Div. 1')))
         );
       });
 
@@ -222,7 +193,7 @@ const ContestSlice = createSlice({
       state,
       contestStanding: PayloadAction<ContestStanding.RootObject>
     ) {
-      console.log("updtRow");
+      console.log('updtRow');
       const arr = contestStanding.payload.result.rows;
       let finalList = state.reportRow;
       const contest: ContestStanding.Contest =
@@ -259,7 +230,7 @@ const ContestSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(saveContestDb.rejected, (state) => {
       console.log(state.list.length);
-      console.log("R saveContestDb");
+      console.log('R saveContestDb');
     });
   },
 });
