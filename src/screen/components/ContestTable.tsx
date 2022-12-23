@@ -37,7 +37,7 @@ const ContestTable = () => {
     >
       <Table size="md" fontSize="1.4rem">
         <TableCaption fontSize="1.6rem" placement="top" color="darkblue">
-          All contest on this month
+          All contest on this period
         </TableCaption>
         <Thead>
           <Tr>

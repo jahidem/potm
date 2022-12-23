@@ -73,15 +73,14 @@ const Contestant = () => {
 
   return (
     <>
-      <Grid
-        templateRows="repeat(10, 6rem)"
-        templateColumns="repeat(1, 1fr)"
-        gap={1}
+      <Flex
         bg="rgb(247, 249, 249,1)"
         borderRadius="11px"
-        p="1rem"
+        p="2.4rem 1rem"
+
+        flexDir="column"
       >
-        <GridItem rowSpan={2}>
+        <Flex height="120px" flexDir="column">
           <Flex
             alignItems="center"
             justifyContent="space-between"
@@ -128,8 +127,8 @@ const Contestant = () => {
           >
             not a valid cf handle
           </Text>
-        </GridItem>
-        <GridItem rowSpan={8} overflowY="scroll" pr="0.6rem">
+        </Flex>
+        <Box overflowY="scroll" pr="0.6rem" maxH ="calc( 100vh - 260px)">
           <TableContainer mx="0.5rem">
             <Table variant="striped" colorScheme="gray" fontSize="1.4rem">
               <Tbody>
@@ -189,8 +188,8 @@ const Contestant = () => {
               </Tbody>
             </Table>
           </TableContainer>
-        </GridItem>
-      </Grid>
+        </Box>
+      </Flex>
     </>
   );
 };

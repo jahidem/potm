@@ -50,7 +50,7 @@ const Filter = () => {
         </Flex>
         <Flex w="100%" justifyContent="center" flexDir="column">
           <Text colorScheme="gray" fontSize="1.4rem" fontWeight="semibold">
-            The programmer of the will be generate including the current
+            The programmer of the month will be generate including the current
             contestant and contest.
           </Text>
           <Button

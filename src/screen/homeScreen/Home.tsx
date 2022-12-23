@@ -16,10 +16,12 @@ const Home = () => {
         px="2rem"
         templateRows="repeat(10, 5.6rem)"
         templateColumns="repeat(6, 1fr)"
-        gap={4}
+        gap={2}
+        
       >
         <GridItem
           maxW="360px"
+          height="calc(100vh - 11rem)"
           rowSpan={10}
           colSpan={2}
           bg="rgb(247, 249, 249,1)"
@@ -28,6 +30,7 @@ const Home = () => {
           <Contestant />
         </GridItem>
         <GridItem
+        mr="1.4rem"
           colSpan={2}
           rowSpan={4}
           bg="rgb(247, 249, 249,1)"
@@ -36,6 +39,7 @@ const Home = () => {
           <Filter/>
         </GridItem>
         <GridItem
+        
           colSpan={2}
           rowSpan={4}
           bg="rgb(247, 249, 249,1)"
@@ -44,8 +48,10 @@ const Home = () => {
           <Setting />
         </GridItem>
         <GridItem
+          height="calc(100vh - 350px)"
           rowSpan={6}
-          mt="1rem"
+          p = "1rem"
+          mt="1.4rem"
           colSpan={4}
           bg="rgb(178,216,216,0.2)"
           borderRadius="11px"

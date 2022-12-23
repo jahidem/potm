@@ -64,6 +64,7 @@ const ReportPotm = () => {
           alignItems="center"
           height="100%"
           width="100%"
+          overflowY="scroll"
         >
           <Spinner size="xl" color="blueviolet" speed="0.65s" />
         </Flex>
