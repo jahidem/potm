@@ -14,11 +14,16 @@
 > The scoring for the standings is according to this  [Scoring Criteria.pdf](https://github.com/jahidem/potm/blob/master/docs/ScoringCriteria.pdf)
 
 <img src="./docs/potm1.png" alt="drawing"  width="800"/> 
+![Screenshot 2022-12-24 224146](https://user-images.githubusercontent.com/54525656/209444557-cfa8c570-0434-43cb-9623-7a36e0f64d22.png)
+![Screenshot 2022-12-24 224206](https://user-images.githubusercontent.com/54525656/209444563-4295eba0-ca92-4f46-84da-76987af463a0.png)
+
 
 &nbsp;
 
 ## Working Preview:
-https://user-images.githubusercontent.com/54525656/208222151-b17f00b8-79bd-4bff-83a9-f8f15b5b1420.mp4
+
+
+https://user-images.githubusercontent.com/54525656/209444595-d04f82f1-7ca7-488c-8323-c6810d6b5980.mp4
 
 
 
