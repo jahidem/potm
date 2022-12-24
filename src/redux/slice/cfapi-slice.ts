@@ -11,7 +11,7 @@ import { Loading } from '../../common/types';
 
 export const fetchAllContest = createAsyncThunk(
   'cfSlice/fetchAllContest',
-  async (time:number, thunkAPI) => {
+  async (_, thunkAPI) => {
     let url = "https://codeforces.com/api/contest.list?gym=false"
     const response = await axios.get(
        url,
@@ -21,7 +21,7 @@ export const fetchAllContest = createAsyncThunk(
           },
         }
     );
-    thunkAPI.dispatch(saveContest(response.data.result))
+    await thunkAPI.dispatch(saveContest(response.data.result))
     return  response.data
   }
 )

@@ -1,6 +1,6 @@
-import { BrowserWindow, Menu, IpcRenderer, ipcRenderer } from 'electron';
-import { printPdf } from './lib/utils';
-import path = require('path');
+import { BrowserWindow, Menu, IpcRenderer, ipcRenderer } from "electron";
+import { printPdf } from "./lib/utils";
+import path = require("path");
 
 export default class HomeWindow {
   static thisWindow: Electron.BrowserWindow | null;
@@ -9,7 +9,7 @@ export default class HomeWindow {
   static application: Electron.App;
   static BrowserWindow;
   private static onWindowAllClosed() {
-    if (process.platform !== 'darwin') {
+    if (process.platform !== "darwin") {
       HomeWindow.application.quit();
     }
   }
@@ -26,19 +26,19 @@ export default class HomeWindow {
       minWidth: 1100,
       minHeight: 720,
       frame: false,
-      backgroundColor: 'white',
+      backgroundColor: "white",
       webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-        devTools: true,
+        preload: path.join(__dirname, "preload.js"),
+        devTools: false,
       },
     });
     if (HomeWindow.thisWindow != null) {
-      // HomeWindow.thisWindow.loadURL(
-      //   'file://' + __dirname + '/../index.html#/home'
-      // );
-      HomeWindow.thisWindow.loadURL('http://localhost:3000/#/home');
+      HomeWindow.thisWindow.loadURL(
+        'file://' + __dirname + '/../index.html#/home'
+      );
+      // HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
 
-      HomeWindow.thisWindow.on('closed', HomeWindow.onClose);
+      HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
     }
   }
   private static closePotmWindow() {
@@ -51,15 +51,16 @@ export default class HomeWindow {
       minWidth: 1100,
       minHeight: 720,
       frame: true,
-      backgroundColor: 'white',
+      backgroundColor: "white",
       autoHideMenuBar: true,
       show: false,
       parent: HomeWindow.thisWindow,
       webPreferences: {
+        devTools: false,
       },
     });
     win.loadURL(url);
-    win.once('ready-to-show', () => {
+    win.once("ready-to-show", () => {
       win.show();
     });
   }
@@ -70,22 +71,23 @@ export default class HomeWindow {
       height: 750,
       minWidth: 1100,
       minHeight: 720,
-      autoHideMenuBar: true ,
+
+      autoHideMenuBar: true,
       frame: true,
-      title: 'Standings Log',
-      backgroundColor: 'white',
+      title: "Standings Log",
+      backgroundColor: "white",
       modal: true,
       parent: HomeWindow.potmWindow,
-
+      minimizable: false,
       webPreferences: {
-        preload: path.join(__dirname, 'preloadLog.js'),
-        devTools: true,
+        devTools: false,
+        preload: path.join(__dirname, "preloadLog.js"),
       },
     });
 
     if (HomeWindow.logWindow != null) {
-      // HomeWindow.logWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
-      HomeWindow.logWindow.loadURL('http://localhost:3000/#/log');
+      HomeWindow.logWindow.loadURL('file://' + __dirname + '/../index.html#/log');
+      // HomeWindow.logWindow.loadURL("http://localhost:3000/#/log");
     }
   }
 
@@ -96,37 +98,36 @@ export default class HomeWindow {
       minWidth: 1100,
       minHeight: 720,
       frame: true,
-      title: 'POTM',
-      backgroundColor: 'white',
+      title: "POTM",
+      backgroundColor: "white",
       modal: true,
-      parent: HomeWindow.thisWindow, // Make sure to add parent window here
-
-      // Make sure to add webPreferences with below configuration
+      parent: HomeWindow.thisWindow,
+      minimizable: false,
       webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-        devTools: true,
+        preload: path.join(__dirname, "preload.js"),
+        devTools: false,
       },
     });
 
     if (HomeWindow.potmWindow != null) {
       const template = [
         {
-          label: 'File',
+          label: "File",
           submenu: [
             {
-              label: 'Print',
+              label: "Print",
               click: () => {
                 printPdf(HomeWindow.potmWindow.webContents);
               },
             },
             {
-              label: 'Logs',
+              label: "Logs",
               click: () => {
                 HomeWindow.createLogWindow();
               },
             },
             {
-              label: 'Exit',
+              label: "Exit",
               click: () => {
                 HomeWindow.potmWindow.close();
               },
@@ -136,8 +137,8 @@ export default class HomeWindow {
       ];
       const menu = Menu.buildFromTemplate(template);
       Menu.setApplicationMenu(menu);
-      // HomeWindow.potmWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
-      HomeWindow.potmWindow.loadURL('http://localhost:3000/#/potm');
+      HomeWindow.potmWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
+      // HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
       // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }
   }
@@ -150,9 +151,9 @@ export default class HomeWindow {
     HomeWindow.BrowserWindow = browserWindow;
     HomeWindow.application = app;
     HomeWindow.application.on(
-      'window-all-closed',
+      "window-all-closed",
       HomeWindow.onWindowAllClosed
     );
-    HomeWindow.application.on('ready', HomeWindow.onReady);
+    HomeWindow.application.on("ready", HomeWindow.onReady);
   }
 }

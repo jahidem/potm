@@ -1,12 +1,12 @@
-import { useAppDispatch, useAppSelector } from '../../redux/hook';
-import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { useEffect, useState } from "react";
 import {
   contestListDbToState,
   setGenerateState,
   updateReportRow,
   makeReport,
-} from '../../redux/slice/contest-slice';
-import { fetchStandingRow } from '../../redux/slice/cfapi-slice';
+} from "../../redux/slice/contest-slice";
+import { fetchStandingRow } from "../../redux/slice/cfapi-slice";
 import {
   Flex,
   Spinner,
@@ -22,14 +22,14 @@ import {
   TableCaption,
   Link,
   Button,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 import {
   Contest,
   Contestant,
   GenerateReport,
   ReportRow,
-} from '../../common/types';
-import { contestantListDbToState } from '../../redux/slice/contestant-slice';
+} from "../../common/types";
+import { contestantListDbToState } from "../../redux/slice/contestant-slice";
 const ReportPotm = () => {
   const reportRow: ReportRow[] = useAppSelector(
     (state) => state.contest.reportRow
@@ -39,7 +39,7 @@ const ReportPotm = () => {
   );
   const listLog = useAppSelector((state) => state.contest.listLogs);
   const dispatch = useAppDispatch();
-  const [nowOnRow, setNowOnRow] = useState('');
+  const [nowOnRow, setNowOnRow] = useState("");
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -47,14 +47,17 @@ const ReportPotm = () => {
       await dispatch(contestListDbToState());
       await dispatch(contestantListDbToState());
       await dispatch(makeReport());
+      
     };
 
     fetchAll();
-
-    window.api.handleLogList((event) => {
-      event.sender.send('SEND_LOG_LIST', listLog);
-    });
   }, []);
+
+  useEffect(()=>{
+    window.api.handleLogList((event) => {
+      event.sender.send("SEND_LOG_LIST", listLog);
+    });
+  },[listLog])
 
   return (
     <>
@@ -75,11 +78,11 @@ const ReportPotm = () => {
             maxW="900px"
             mx="auto"
             padding="1rem"
-            mt="4rem"
+            mt="2rem"
           >
-            <Table size="md" fontSize="1.4rem" variant="striped">
+            <Table size="lg" fontSize="1.4rem" variant="striped">
               <TableCaption
-                fontSize="1.6rem"
+                fontSize="1.8rem"
                 placement="top"
                 color="darkblue"
                 my="1.4rem"
@@ -101,13 +104,13 @@ const ReportPotm = () => {
                       setNowOnRow(rep.handle);
                     }}
                     onMouseLeave={() => {
-                      setNowOnRow('');
+                      setNowOnRow("");
                     }}
-                    bgColor={rep.handle == nowOnRow ? 'white' : 'none'}
+                    bgColor={rep.handle == nowOnRow ? "white" : "none"}
                   >
                     <Td>{rep.rank}</Td>
                     <Td> {rep.handle} </Td>
-                    <Td isNumeric>{rep.points - rep.penalty}</Td>
+                    <Td>{rep.points - rep.penalty}</Td>
                   </Tr>
                 ))}
               </Tbody>

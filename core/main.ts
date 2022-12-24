@@ -102,10 +102,10 @@ ipcMain.on('MAXIMIZE_WINDOW', () => {
   }
 });
 
-// handle IPC from log window
+// handle IPC conmmunicate between  logWindow and potmWindow 
 
 ipcMain.on('LOAD_LOG_LIST', () => {
-  HomeWindow.thisWindow.webContents.send('GET_LOG_LIST');
+  HomeWindow.potmWindow.webContents.send('GET_LOG_LIST');
 });
 
 ipcMain.on('SEND_LOG_LIST',(event , value)=>{

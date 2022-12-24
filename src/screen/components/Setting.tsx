@@ -46,7 +46,7 @@ const Setting = () => {
 
   useEffect(() => {
     const update = async () => {
-      dispatch(fetchAllContest(1));
+      dispatch(fetchAllContest());
     };
     update();
   }, [updateList]);
