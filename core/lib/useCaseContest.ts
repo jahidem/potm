@@ -1,15 +1,12 @@
-import { Contest } from "../../src/common/types";
-import prisma from "./db";
+import { Contest } from '../../src/common/types';
+import prisma from './db';
 
 export async function saveAllContest(rawData: Contest[]) {
-  console.log("rawdata");
   rawData.forEach(async (con) => {
     await prisma.contest.create({
       data: con,
     });
   });
-  console.log("svaing list________________________________________________________")
-  console.log(rawData.length);
   return rawData;
 }
 
@@ -25,8 +22,6 @@ export async function findAllContest() {
     };
     return ret;
   });
-  console.log("Returning List____________________________________________________________")
-  console.log(retList.length);
   return retList;
 }
 
@@ -34,7 +29,5 @@ export async function deleteContest(data: Contest) {
   const con = await prisma.contest.delete({
     where: { id: data.id },
   });
-  console.log("deleteing ___________________________________________________________")
-  console.log(data.id);
   return con;
 }

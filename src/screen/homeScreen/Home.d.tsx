@@ -19,7 +19,11 @@ export interface Api {
   deleteContest: (data: Contest) =>  Promise<Contest>,
   findAllContest: () => Promise<Contest[]>,
   saveContestToDb: (data: Contest[]) => Promise< Contest[]>,
-
+  // listen for main events
+  
+  handleLogList: (callback: (event)=>void) => void,
+  readyLogList: (callback: (event, value)=>void) => void,
+  loadLogListFromPotmWindow: () => void
 }
 
 declare global {

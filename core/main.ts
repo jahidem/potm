@@ -1,4 +1,11 @@
-import { shell, app, BrowserWindow, ipcMain, IpcMainInvokeEvent, WebContents } from 'electron';
+import {
+  shell,
+  app,
+  BrowserWindow,
+  ipcMain,
+  IpcMainInvokeEvent,
+  WebContents,
+} from 'electron';
 import prisma from './lib/db';
 import path = require('path');
 import os = require('os');
@@ -21,7 +28,7 @@ process.env.DATABASE_URL = 'file:./sqlite.db'; //"file:"+dbPath
 // console.log(`The connection URL is ${process.env.DATABASE_URL}`)
 
 HomeWindow.main(app, BrowserWindow);
-ipcMain.handle('PRINT_WEB_CONTENT', (event)=>printPdf(event.sender));
+ipcMain.handle('PRINT_WEB_CONTENT', (event) => printPdf(event.sender));
 
 /*  All IPC */
 
@@ -57,7 +64,6 @@ ipcMain.handle('DELETE_CONTESTANT', (event, args) => {
 
 //Contest IPC
 ipcMain.handle('SAVE_ALL_CONTEST', (event, args) => {
-  console.log('saveallcon');
   saveAllContest(args)
     .then(async () => {
       await prisma.$disconnect();
@@ -96,4 +102,12 @@ ipcMain.on('MAXIMIZE_WINDOW', () => {
   }
 });
 
+// handle IPC from log window
 
+ipcMain.on('LOAD_LOG_LIST', () => {
+  HomeWindow.thisWindow.webContents.send('GET_LOG_LIST');
+});
+
+ipcMain.on('SEND_LOG_LIST',(event , value)=>{
+  HomeWindow.logWindow.webContents.send('READY_LOG_LIST', value)
+})

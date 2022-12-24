@@ -58,9 +58,7 @@ const Setting = () => {
       if (date.month < 10) dateString += '0' + date.month;
       else dateString += date.month;
       dateString += '-01';
-      console.log(dateString);
       date.epoch = new Date(dateString).getTime();
-      console.log(date.epoch);
       return date;
     }
     return date;

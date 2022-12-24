@@ -34,6 +34,10 @@ export interface ReportRow {
   points: number;
 }
 
+export interface StandingLogs{
+  reportRow: ReportRow,
+  contest: ContestStanding.Contest
+}
 // Contest Standing types
 
 export module ContestStanding {

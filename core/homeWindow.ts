@@ -5,6 +5,7 @@ import path = require('path');
 export default class HomeWindow {
   static thisWindow: Electron.BrowserWindow | null;
   static potmWindow: Electron.BrowserWindow | null;
+  static logWindow: Electron.BrowserWindow | null;
   static application: Electron.App;
   static BrowserWindow;
   private static onWindowAllClosed() {
@@ -32,7 +33,9 @@ export default class HomeWindow {
       },
     });
     if (HomeWindow.thisWindow != null) {
-      // HomeWindow.thisWindow.loadURL("file://" + __dirname + "/index.html#/home");
+      // HomeWindow.thisWindow.loadURL(
+      //   'file://' + __dirname + '/../index.html#/home'
+      // );
       HomeWindow.thisWindow.loadURL('http://localhost:3000/#/home');
 
       HomeWindow.thisWindow.on('closed', HomeWindow.onClose);
@@ -53,7 +56,6 @@ export default class HomeWindow {
       show: false,
       parent: HomeWindow.thisWindow,
       webPreferences: {
-        devTools: false,
       },
     });
     win.loadURL(url);
@@ -61,13 +63,38 @@ export default class HomeWindow {
       win.show();
     });
   }
+
+  public static createLogWindow() {
+    HomeWindow.logWindow = new BrowserWindow({
+      width: 1200,
+      height: 750,
+      minWidth: 1100,
+      minHeight: 720,
+      autoHideMenuBar: true ,
+      frame: true,
+      title: 'Standings Log',
+      backgroundColor: 'white',
+      modal: true,
+      parent: HomeWindow.potmWindow,
+
+      webPreferences: {
+        preload: path.join(__dirname, 'preloadLog.js'),
+        devTools: true,
+      },
+    });
+
+    if (HomeWindow.logWindow != null) {
+      // HomeWindow.logWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
+      HomeWindow.logWindow.loadURL('http://localhost:3000/#/log');
+    }
+  }
+
   public static createPotmWindow() {
     HomeWindow.potmWindow = new BrowserWindow({
       width: 1200,
       height: 750,
       minWidth: 1100,
       minHeight: 720,
-      // show: false,
       frame: true,
       title: 'POTM',
       backgroundColor: 'white',
@@ -82,28 +109,34 @@ export default class HomeWindow {
     });
 
     if (HomeWindow.potmWindow != null) {
-      // HomeWindow.potmWindow.loadURL("file://" + __dirname + "/index.html#/potm");
       const template = [
         {
           label: 'File',
           submenu: [
             {
               label: 'Print',
-              click: ()=>{
-                printPdf(HomeWindow.potmWindow.webContents )
-              }
+              click: () => {
+                printPdf(HomeWindow.potmWindow.webContents);
+              },
+            },
+            {
+              label: 'Logs',
+              click: () => {
+                HomeWindow.createLogWindow();
+              },
             },
             {
               label: 'Exit',
-              click: ()=>{
-                HomeWindow.potmWindow.close()
-              }
+              click: () => {
+                HomeWindow.potmWindow.close();
+              },
             },
           ],
         },
       ];
       const menu = Menu.buildFromTemplate(template);
       Menu.setApplicationMenu(menu);
+      // HomeWindow.potmWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
       HomeWindow.potmWindow.loadURL('http://localhost:3000/#/potm');
       // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }

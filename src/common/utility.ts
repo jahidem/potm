@@ -39,10 +39,12 @@ const calculatePoints = (
 
 const CODEFORCES_PROFILE = 'https://codeforces.com/profile/';
 const CODEFORCES_CONTEST = 'https://codeforces.com/contest/';
+const CODEFORCES_STANDING = 'https://codeforces.com/api/contest.standings?contestId='
 
 export {
   colorFromRank,
   calculatePoints,
   CODEFORCES_PROFILE,
   CODEFORCES_CONTEST,
+  CODEFORCES_STANDING
 };

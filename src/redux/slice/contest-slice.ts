@@ -7,15 +7,14 @@ import {
   ContestType,
   Contestant,
   GenerateReport,
+  StandingLogs,
 } from '../../common/types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { saveAll } from '../../../core/lib/useCaseContestant';
 import { RoomState, AppDispatch } from '../store';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { fetchStandingRow } from './cfapi-slice';
-import { calculatePoints } from '../../common/utility';
-
-
+import { CODEFORCES_STANDING, calculatePoints } from '../../common/utility';
 
 // AsyncThunk
 
@@ -59,7 +58,6 @@ export const makeReport = createAsyncThunk<
 >('contest/makeReport', async (_, thunkAPI) => {
   const contestList = thunkAPI.getState().contest.list;
   const contestantList = thunkAPI.getState().contstant.list;
-  console.log(contestList);
   // bulild request string
   let handles = '&handles=';
   contestantList.map((contestant: Contestant) => {
@@ -68,13 +66,10 @@ export const makeReport = createAsyncThunk<
   handles += '&showUnofficial=true';
 
   for (const contest of contestList) {
-    const url =
-      'https://codeforces.com/api/contest.standings?contestId=' +
-      contest.id +
-      handles;
+    const url = CODEFORCES_STANDING + contest.id + handles;
     await thunkAPI.dispatch(fetchStandingRow(url));
   }
-
+  thunkAPI.dispatch(generateRanking());
   thunkAPI.dispatch(setGenerateState(GenerateReport.DONE));
 });
 
@@ -91,10 +86,6 @@ export const saveContestDb = createAsyncThunk<
   }
 >('contest/saveContestDb', async (_, thunkAPI) => {
   const deleteList = await window.api.findAllContest();
-  console.log(
-    'deleteList_________________________________________________________________________'
-  );
-  console.log(deleteList.length);
   for (const con of deleteList) {
     await window.api.deleteContest(con);
   }
@@ -126,6 +117,7 @@ interface ContestState {
   allowOC: (string | number)[];
   reportRow: ReportRow[];
   reportGenerate: GenerateReport;
+  listLogs: StandingLogs[];
 }
 const initialState: ContestState = {
   list: [],
@@ -135,6 +127,7 @@ const initialState: ContestState = {
   allowOC: [],
   reportRow: [],
   reportGenerate: GenerateReport.IDLE,
+  listLogs: [],
 };
 
 const ContestSlice = createSlice({
@@ -193,7 +186,6 @@ const ContestSlice = createSlice({
       state,
       contestStanding: PayloadAction<ContestStanding.RootObject>
     ) {
-      console.log('updtRow');
       const arr = contestStanding.payload.result.rows;
       let finalList = state.reportRow;
       const contest: ContestStanding.Contest =
@@ -207,6 +199,12 @@ const ContestSlice = createSlice({
             penalty: 0,
           };
           reportRow = calculatePoints(contest, row, reportRow);
+          if (reportRow.points) {
+            state.listLogs.push({
+              contest: contest,
+              reportRow: reportRow,
+            });
+          }
           let exist = false;
           finalList = finalList.map((row2: ReportRow) => {
             if (row2.handle == reportRow.handle) {
@@ -225,13 +223,23 @@ const ContestSlice = createSlice({
     setGenerateState(state, generate: PayloadAction<GenerateReport>) {
       state.reportGenerate = generate.payload;
     },
+    generateRanking(state) {
+      let list: ReportRow[] = state.reportRow;
+      list.sort((a, b) =>
+        a.points - a.penalty < b.points - b.penalty ? 1 : -1
+      );
+      list = list.map((row, indx) => ({ ...row, rank: indx + 1 }));
+      state.reportRow = list;
+    },
+    
+  loadLogList(state,action: PayloadAction<StandingLogs[]>){
+    state.listLogs = action.payload
+  }
+  ,
   },
 
   extraReducers: (builder) => {
-    builder.addCase(saveContestDb.rejected, (state) => {
-      console.log(state.list.length);
-      console.log('R saveContestDb');
-    });
+    builder.addCase(saveContestDb.rejected, (state) => {});
   },
 });
 
@@ -245,5 +253,7 @@ export const {
   updateReportRow,
   setGenerateState,
   saveAllContest,
+  generateRanking,
+  loadLogList
 } = ContestSlice.actions;
 export default ContestSlice.reducer;

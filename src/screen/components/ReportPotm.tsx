@@ -37,6 +37,7 @@ const ReportPotm = () => {
   const generateReport = useAppSelector(
     (state) => state.contest.reportGenerate
   );
+  const listLog = useAppSelector((state) => state.contest.listLogs);
   const dispatch = useAppDispatch();
   const [nowOnRow, setNowOnRow] = useState('');
 
@@ -49,16 +50,12 @@ const ReportPotm = () => {
     };
 
     fetchAll();
+
+    window.api.handleLogList((event) => {
+      event.sender.send('SEND_LOG_LIST', listLog);
+    });
   }, []);
 
-  // useEffect(() => {
-  //   const loadAll = async () => {
-  //     dispatch(contestListDbToState());
-  //     dispatch(contestantListDbToState());
-  //   };
-
-  //   loadAll();
-  // }, []);
   return (
     <>
       <hr />

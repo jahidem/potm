@@ -41,8 +41,8 @@
     "start:desktop": "npm run build:desktop && electron build/core/main.js",
     "migrate": "cd core && npx prisma migrate dev --name init",
     "studio": "cd core && npx prisma studio",
-    "build": "electron-builder --x64 --ia32",
-    "publish": "build --win -p always",
+    "build": "electron-builder --x64",
+    "publish": "electron-builder --x64 --win -p always",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -88,8 +88,7 @@
         {
           "target": "NSIS",
           "arch": [
-            "x64",
-            "ia32"
+            "x64"
           ]
         }
       ]

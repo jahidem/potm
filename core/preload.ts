@@ -26,5 +26,9 @@ contextBridge.exposeInMainWorld("api", {
   //POTM Window
 
   openPotmWindow: ()=> ipcRenderer.send("OPEN_POTM_WINDOW"),
-  openContentWindow: (data: string)=> ipcRenderer.send("OPEN_CONTENT_WINDOW", data)
+  openContentWindow: (data: string)=> ipcRenderer.send("OPEN_CONTENT_WINDOW", data),
+
+  //listen for logWindow through main
+  
+  handleLogList: (callback: (event,value)=>void) =>  ipcRenderer.on('GET_LOG_LIST', callback)
 });
