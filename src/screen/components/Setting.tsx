@@ -8,17 +8,17 @@ import {
   Checkbox,
   CheckboxGroup,
   Stack,
-} from '@chakra-ui/react';
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import { useEffect, useState } from 'react';
-import { useAppSelector, useAppDispatch } from '../../redux/hook';
-import { fetchAllContest } from '../../redux/slice/cfapi-slice';
-import { Loading } from '../../common/types';
+} from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useEffect, useState } from "react";
+import { useAppSelector, useAppDispatch } from "../../redux/hook";
+import { fetchAllContest } from "../../redux/slice/cfapi-slice";
+import { Loading } from "../../common/types";
 import {
   setEpochStart,
   setEpochEnd,
   updateAllowDiv,
-} from '../../redux/slice/contest-slice';
+} from "../../redux/slice/contest-slice";
 
 interface ChooserState {
   month: number;
@@ -39,8 +39,8 @@ const Setting = () => {
   const [start, setStart] = useState<ChooserState>(initials);
   const [end, setEnd] = useState<ChooserState>({ ...initials, month: 12 });
   const [checkedDiv, setCheckedDiv] = useState<(string | number)[]>([
-    'Div. 2',
-    'Div. 3',
+    "Div. 2",
+    "Div. 3",
   ]);
   const [updateList, setUpdateList] = useState(0);
 
@@ -51,28 +51,37 @@ const Setting = () => {
     update();
   }, [updateList]);
 
-  const getEpo = (date: ChooserState) => {
-    if (date.month && date.year) {
-      let dateString = '';
-      dateString += date.year + '-';
-      if (date.month < 10) dateString += '0' + date.month;
-      else dateString += date.month;
-      dateString += '-01';
-      date.epoch = new Date(dateString).getTime();
-      return date;
-    }
-    return date;
+  const getEpo = (Nowdate: ChooserState, type: string): number => {
+    const date = {
+      ...Nowdate,
+      month:
+        type != "ENDING"
+          ? Nowdate.month
+          : Nowdate.month != 12
+          ? Nowdate.month + 1
+          : 1,
+      year:
+        type != "ENDING" || Nowdate.month != 12
+          ? Nowdate.year
+          : Nowdate.year + 1,
+    };
+
+    let dateString = "";
+    dateString += date.year + "-";
+    if (date.month < 10) dateString += "0" + date.month;
+    else dateString += date.month;
+    dateString += "-01";
+    date.epoch = new Date(dateString).getTime();
+    return date.epoch;
   };
   useEffect(() => {
-    const date = getEpo(start);
-    setStart(date);
-    dispatch(setEpochStart(date.epoch));
+    const epoch = getEpo(start, "STARTING");
+    dispatch(setEpochStart(epoch));
   }, [start]);
 
   useEffect(() => {
-    const date = getEpo(end);
-    setEnd(date);
-    dispatch(setEpochEnd(date.epoch));
+    const epoch = getEpo(end, "ENDING");
+    dispatch(setEpochEnd(epoch));
   }, [end]);
 
   useEffect(() => {
@@ -97,7 +106,7 @@ const Setting = () => {
             alignItems="center"
           >
             <Text fontSize="1.4rem" fontWeight="semibold">
-              From:{' '}
+              From:
             </Text>
             <Select
               width="6rem"
@@ -157,7 +166,7 @@ const Setting = () => {
             alignItems="center"
           >
             <Text fontSize="1.4rem" fontWeight="semibold">
-              Till:{' '}
+              To:
             </Text>
             <Select
               width="6rem"
@@ -223,13 +232,13 @@ const Setting = () => {
 
           <Flex mt="0.8rem" ml="1rem">
             <Text fontSize="1.3rem" mr="1.4rem" fontWeight="semibold">
-              Division:{' '}
+              Division:{" "}
             </Text>
             <CheckboxGroup
               defaultValue={checkedDiv}
               onChange={(value) => setCheckedDiv(value)}
             >
-              <Stack spacing={[3]} direction={['row']}>
+              <Stack spacing={[3]} direction={["row"]}>
                 <Checkbox colorScheme="teal" size="lg" value="Div. 1">
                   Div. 1
                 </Checkbox>
