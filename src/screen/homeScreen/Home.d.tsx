@@ -1,3 +1,4 @@
+import { LogMessage } from "electron-log";
 import { Contestant, Contest } from "../../common/types"; 
 export interface Api {
   preloadSucess: string,
@@ -23,7 +24,9 @@ export interface Api {
   
   handleLogList: (callback: (event)=>void) => void,
   readyLogList: (callback: (event, value)=>void) => void,
-  loadLogListFromPotmWindow: () => void
+  loadLogListFromPotmWindow: () => void,
+  logger: (data: LogMessage) => void,
+
 }
 
 declare global {

@@ -1,6 +1,7 @@
 import { BrowserWindow, WebContents, app, shell } from "electron";
 import fs = require('fs');
 import path = require("path");
+import   log from "electron-log";
 
 const printPdf = (event: WebContents) => {
   const pdfPath = path.join(app.getPath('userData'), 'potm.pdf');
@@ -26,6 +27,6 @@ const printPdf = (event: WebContents) => {
       console.log(`Failed to write PDF to ${pdfPath}: `, error);
     });
 };
+const mainLog = log.scope("MAIN");
 
-
-export {printPdf}
+export {printPdf, mainLog}

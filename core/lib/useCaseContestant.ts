@@ -1,24 +1,27 @@
-import { Contestant} from "@prisma/client";
+import { Contestant } from "@prisma/client";
 import prisma from "./db";
+import { mainLog } from "./utils";
 
-export interface CfInfo{
-  rating: number ,
-  titlePhoto: string,
-  handle:string,
-  avatar: string,
-  firstName: string,
-  rank:string,
- }
- export interface ContestantFront{
-   id: number
-   name: string,
-   isValid: boolean,
-   info: CfInfo|null
- }
+export interface CfInfo {
+  rating: number;
+  titlePhoto: string;
+  handle: string;
+  avatar: string;
+  firstName: string;
+  rank: string;
+}
+export interface ContestantFront {
+  id: number;
+  name: string;
+  isValid: boolean;
+  info: CfInfo | null;
+}
 
 export async function saveAll(rawData: ContestantFront[]) {
-  const data: Contestant[] = rawData.map(con=>{
-    const convert:Contestant = {
+  mainLog.info("saving contestant db", rawData);
+
+  const data: Contestant[] = rawData.map((con) => {
+    const convert: Contestant = {
       CfInfoAvatar: con.info?.avatar,
       CfInfoFirstName: con.info?.firstName,
       CfInfoHandle: con.info?.handle,
@@ -27,24 +30,26 @@ export async function saveAll(rawData: ContestantFront[]) {
       CfInfoTitlePhoto: con.info?.titlePhoto,
       id: con.id,
       isValid: con.isValid,
-      name: con.name
-    }
-    return convert
-  })
-  data.forEach(async(contestant)=>{
-  await prisma.contestant.create(
-    {
-      data: contestant
-    }
-  )})
+      name: con.name,
+    };
+
+    return convert;
+  });
+
+  data.forEach(async (contestant) => {
+    await prisma.contestant.create({
+      data: contestant,
+    });
+  });
 
   return rawData;
 }
 
 export async function findAll() {
+  mainLog.info("Retrieve all contestant");
   const listAll: Contestant[] = await prisma.contestant.findMany();
-  const retAll: ContestantFront[] = listAll.map(con=>{
-    const convert:ContestantFront= {
+  const retAll: ContestantFront[] = listAll.map((con) => {
+    const convert: ContestantFront = {
       id: con.id,
       name: con.name,
       isValid: con.isValid,
@@ -54,9 +59,9 @@ export async function findAll() {
         handle: con.CfInfoHandle,
         rank: con.CfInfoRank,
         rating: con.CfInfoRatting,
-        titlePhoto: con.CfInfoTitlePhoto
-      }
-    }
+        titlePhoto: con.CfInfoTitlePhoto,
+      },
+    };
     return convert;
   });
   return retAll;
@@ -64,8 +69,8 @@ export async function findAll() {
 
 export async function deleteContestant(data: ContestantFront) {
   const deleteContestant = await prisma.contestant.delete({
-    where: {name: data.name},
-  })
+    where: { name: data.name },
+  });
 
   return data;
 }

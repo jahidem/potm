@@ -75,11 +75,23 @@ const Setting = () => {
     return date.epoch;
   };
   useEffect(() => {
+    window.api.logger({
+      data: ["setting start date", start],
+      level: "info",
+      date: null,
+      scope: "UI",
+    });
     const epoch = getEpo(start, "STARTING");
     dispatch(setEpochStart(epoch));
   }, [start]);
 
   useEffect(() => {
+    window.api.logger({
+      data: ["setting end date", end],
+      level: "info",
+      date: null,
+      scope: "UI",
+    });
     const epoch = getEpo(end, "ENDING");
     dispatch(setEpochEnd(epoch));
   }, [end]);

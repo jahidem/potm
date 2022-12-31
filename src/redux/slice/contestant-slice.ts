@@ -19,6 +19,12 @@ export const contestantListDbToState = createAsyncThunk(
 export const getContestantListDb = createAsyncThunk(
   'contestant/getContestantListDb',
   async ( num:number = 0,thunkAPI) => {
+    window.api.logger({
+      data: ["trying to retrieve contestant from db"],
+      date: null,
+      level: "info",
+      scope: "UI"
+    });
     const list = await window.api.findAllContestant();
     thunkAPI.dispatch(addList(list));
     return  list

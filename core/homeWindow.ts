@@ -29,7 +29,8 @@ export default class HomeWindow {
       backgroundColor: "white",
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
-        devTools: false,
+
+        devTools: true,
       },
     });
     if (HomeWindow.thisWindow != null) {

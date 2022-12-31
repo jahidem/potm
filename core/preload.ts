@@ -1,4 +1,5 @@
 import {  contextBridge, ipcRenderer } from "electron";
+import Logger = require("electron-log");
 import { ContestantFront } from "lib/useCaseContestant";
 import os = require("os");
 import { Contest } from "../src/common/types";
@@ -30,5 +31,8 @@ contextBridge.exposeInMainWorld("api", {
 
   //listen for logWindow through main
   
-  handleLogList: (callback: (event,value)=>void) =>  ipcRenderer.on('GET_LOG_LIST', callback)
+  handleLogList: (callback: (event,value)=>void) =>  ipcRenderer.on('GET_LOG_LIST', callback),
+
+  // log
+  logger: (data: Logger.LogMessage) => ipcRenderer.send('__ELECTRON_LOG__',data),
 });
