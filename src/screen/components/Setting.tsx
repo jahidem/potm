@@ -8,6 +8,7 @@ import {
   Checkbox,
   CheckboxGroup,
   Stack,
+  Switch,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import {
   setEpochStart,
   setEpochEnd,
   updateAllowDiv,
+  toggleAdmin,
 } from "../../redux/slice/contest-slice";
 
 interface ChooserState {
@@ -34,6 +36,7 @@ const initials = {
 
 const Setting = () => {
   const contestLoading = useAppSelector((state) => state.cfapi.contestLoading);
+  const adminMode = useAppSelector((state) => state.contest.adminMode);
   const dispatch = useAppDispatch();
 
   const [start, setStart] = useState<ChooserState>(initials);
@@ -102,22 +105,23 @@ const Setting = () => {
 
   return (
     <>
-      <Flex flexDir="column" p="1.6rem 2rem">
+      <Flex flexDir="column" p="1.6rem 2rem" h="100%">
         <Text
           color="darkblue"
           alignSelf="center"
           fontSize="1.6rem"
           fontWeight="500"
         >
-          Choose the period for POTM
+          Choose the period and division
         </Text>
-        <Flex justifyContent="space-between" my="2rem">
+
+        <Flex justifyContent="space-between" my="1.4rem">
           <Flex
             justifyContent="space-between"
             width="16rem"
             alignItems="center"
           >
-            <Text fontSize="1.4rem" fontWeight="semibold">
+            <Text fontSize="1.4rem" fontWeight="semibold" mr="1.4rem">
               From:
             </Text>
             <Select
@@ -177,7 +181,7 @@ const Setting = () => {
             width="15rem"
             alignItems="center"
           >
-            <Text fontSize="1.4rem" fontWeight="semibold">
+            <Text fontSize="1.4rem" fontWeight="semibold" mr="1.4rem">
               To:
             </Text>
             <Select
@@ -232,23 +236,26 @@ const Setting = () => {
             />
           </Flex>
         </Flex>
-        <Box my="0 1rem">
-          <Text
-            color="darkblue"
-            fontSize="1.6rem"
-            fontWeight="500"
-            textAlign="left"
-          >
-            Filter:
+        <Flex alignItems="center" m="1.4rem 1.4rem 0 0">
+          <Text fontSize="1.4rem" mr="1.4rem" fontWeight="semibold">
+            Coach mode
           </Text>
-
-          <Flex mt="0.8rem" ml="1rem">
-            <Text fontSize="1.3rem" mr="1.4rem" fontWeight="semibold">
-              Division:{" "}
+          <Switch
+            size="lg"
+            isChecked={adminMode ? true : false}
+            onChange={() => dispatch(toggleAdmin())}
+            colorScheme="teal"
+          />
+        </Flex>
+        <Box my="0 1rem" opacity={adminMode ? "0.6" : "1"}>
+          <Flex my="1.4rem">
+            <Text fontSize="1.4rem" mr="1.4rem" fontWeight="semibold">
+              Division:
             </Text>
             <CheckboxGroup
               defaultValue={checkedDiv}
               onChange={(value) => setCheckedDiv(value)}
+              isDisabled={adminMode ? true : false}
             >
               <Stack spacing={[3]} direction={["row"]}>
                 <Checkbox colorScheme="teal" size="lg" value="Div. 1">
@@ -272,7 +279,7 @@ const Setting = () => {
         </Box>
 
         <Button
-          m="3rem 1rem 0 2rem"
+          m="1.4rem 1rem 0 2rem"
           size="lg"
           fontSize="1.4rem"
           colorScheme="teal"

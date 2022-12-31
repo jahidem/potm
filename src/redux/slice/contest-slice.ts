@@ -118,6 +118,7 @@ interface ContestState {
   reportRow: ReportRow[];
   reportGenerate: GenerateReport;
   listLogs: StandingLogs[];
+  adminMode: Boolean;
 }
 const initialState: ContestState = {
   list: [],
@@ -128,6 +129,7 @@ const initialState: ContestState = {
   reportRow: [],
   reportGenerate: GenerateReport.IDLE,
   listLogs: [],
+  adminMode: true,
 };
 
 const ContestSlice = createSlice({
@@ -136,6 +138,19 @@ const ContestSlice = createSlice({
   reducers: {
     filterAllContest(state) {
       let filtered = state.list.filter((contest: Contest) => {
+        if (state.adminMode) {
+          return (
+            new Date(contest.startTimeSeconds * 1000) <
+              new Date(state.epochEnd) &&
+            new Date(state.epochStart) <=
+              new Date(contest.startTimeSeconds * 1000) &&
+            contest.phase == ContestPhase.FINISHED &&
+            (contest.name.includes("Div. 3") ||
+              contest.name.includes("Div. 2") ||
+              contest.name.includes("Codeforces Global Round"))
+          );
+        }
+
         return (
           new Date(contest.startTimeSeconds * 1000) <
             new Date(state.epochEnd) &&
@@ -181,6 +196,9 @@ const ContestSlice = createSlice({
     },
     updateAllowOC(state, arr: PayloadAction<(string | number)[]>) {
       state.allowOC = arr.payload;
+    },
+    toggleAdmin(state) {
+      state.adminMode = !state.adminMode;
     },
     updateReportRow(
       state,
@@ -257,5 +275,6 @@ export const {
   saveAllContest,
   generateRanking,
   loadLogList,
+  toggleAdmin,
 } = ContestSlice.actions;
 export default ContestSlice.reducer;

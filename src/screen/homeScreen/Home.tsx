@@ -26,6 +26,7 @@ const Home = () => {
           colSpan={2}
           bg="rgb(247, 249, 249,1)"
           borderRadius="11px"
+          boxShadow="0.1px 0.1px 4px rgb(115,115,115, 0.2)"
         >
           <Contestant />
         </GridItem>
@@ -43,11 +44,12 @@ const Home = () => {
           rowSpan={4}
           bg="rgb(247, 249, 249,1)"
           borderRadius="11px"
+          boxShadow="0.1px 0.1px 4px rgb(115,115,115, 0.2)"
         >
           <Setting />
         </GridItem>
         <GridItem
-          height="calc(100vh - 350px)"
+          height="calc(100vh - 370px)"
           rowSpan={6}
           p="1rem"
           mt="1.4rem"
@@ -55,6 +57,7 @@ const Home = () => {
           bg="rgb(178,216,216,0.2)"
           borderRadius="11px"
           overflowY="scroll"
+          boxShadow="0.1px 0.1px 4px rgb(115,115,115, 0.2)"
         >
           <ContestTable />
         </GridItem>

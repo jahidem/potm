@@ -34,10 +34,10 @@ export default class HomeWindow {
       },
     });
     if (HomeWindow.thisWindow != null) {
-      // HomeWindow.thisWindow.loadURL(
-      //   'file://' + __dirname + '/../index.html#/home'
-      // );
-      HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
+      HomeWindow.thisWindow.loadURL(
+        'file://' + __dirname + '/../index.html#/home'
+      );
+      // HomeWindow.thisWindow.loadURL("http://localhost:3000/#/home");
 
       HomeWindow.thisWindow.on("closed", HomeWindow.onClose);
     }
@@ -87,8 +87,8 @@ export default class HomeWindow {
     });
 
     if (HomeWindow.logWindow != null) {
-      // HomeWindow.logWindow.loadURL('file://' + __dirname + '/../index.html#/log');
-      HomeWindow.logWindow.loadURL("http://localhost:3000/#/log");
+      HomeWindow.logWindow.loadURL('file://' + __dirname + '/../index.html#/log');
+      // HomeWindow.logWindow.loadURL("http://localhost:3000/#/log");
     }
   }
 
@@ -138,8 +138,8 @@ export default class HomeWindow {
       ];
       const menu = Menu.buildFromTemplate(template);
       Menu.setApplicationMenu(menu);
-      // HomeWindow.potmWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
-      HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
+      HomeWindow.potmWindow.loadURL('file://' + __dirname + '/../index.html#/potm');
+      // HomeWindow.potmWindow.loadURL("http://localhost:3000/#/potm");
       // HomeWindow.potmWindow.on("closed", HomeWindow.closePotmWindow);
     }
   }
